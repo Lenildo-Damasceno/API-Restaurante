@@ -31,9 +31,9 @@ void Produto;
 void Movimentacao;
 
 sincronizarBD().catch((error) => {
-  console.error('Erro ao sincronizar o banco:', error.message);
+  console.error('Erro ao sincronizar o banco:', error);
 });
 
-app.listen(process.env.EXPRESS_PORT, process.env.EXPRESS_HOST, () => {
-  console.log(`Servidor em execução em: http://${process.env.EXPRESS_HOST}:${process.env.EXPRESS_PORT}`);
+app.listen(port, host, () => {
+  console.log(`Servidor em execução em: http://${host}:${port}`);
 });
