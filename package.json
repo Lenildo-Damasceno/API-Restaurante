@@ -1,7 +1,7 @@
 {
-  "name": "api-controle-de-estoque",
+  "name": "api-restaurante",
   "version": "1.0.0",
-  "description": "",
+  "description": "API-Restaurante usando Express, sqlite3 e MVC.",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -11,22 +11,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lenildo-Damasceno/API-Controle-de-Estoque.git"
+    "url": "git+https://github.com/Lenildo-Damasceno/API-Restaurante.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lenildo Damasceno",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Lenildo-Damasceno/API-Controle-de-Estoque/issues"
+    "url": "https://github.com/Lenildo-Damasceno/API-Restaurante/issues"
   },
-  "homepage": "https://github.com/Lenildo-Damasceno/API-Controle-de-Estoque#readme",
+  "homepage": "https://github.com/Lenildo-Damasceno/API-Restaurante#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "morgan": "^1.10.1",
     "mysql2": "^3.22.3",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

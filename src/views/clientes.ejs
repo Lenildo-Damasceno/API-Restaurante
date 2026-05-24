@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<script>
+function confirmarDelecao(url, tipo) {
+  if (confirm(`Tem certeza que deseja deletar este ${tipo}?`)) {
+    fetch(url, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success || res.ok) {
+          location.reload();
+        } else {
+          alert('Erro ao deletar: ' + (data.message || 'Tente novamente'));
+        }
+      })
+      .catch(err => alert('Erro: ' + err.message));
+  }
+}
+
+function editarCliente(id, nome, telefone) {
+  const novoNome = prompt('Novo nome:', nome);
+  if (novoNome === null) return;
+  
+  const novoTelefone = prompt('Novo telefone:', telefone);
+  if (novoTelefone === null) return;
+  
+  fetch(`/clientes/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome: novoNome, telefone: novoTelefone })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success || res.ok) {
+        location.reload();
+      } else {
+        alert('Erro ao atualizar: ' + (data.message || 'Tente novamente'));
+      }
+    })
+    .catch(err => alert('Erro: ' + err.message));
+}
+</script>
+</head>
+<body>
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Página EJS</p>
+    <h2>Clientes cadastrados</h2>
+    <p>Lista dinâmica renderizada pelo servidor.</p>
+  </div>
+  <span class="pill"><%= clientes.length %> registro(s)</span>
+</section>
+
+<% if (feedback) { %>
+  <section class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></section>
+<% } %>
+
+<section class="form-card">
+  <div class="panel-card__header">
+    <div>
+      <p class="eyebrow">Cadastro</p>
+      <h3>Novo cliente</h3>
+    </div>
+  </div>
+
+  <form class="form-grid" action="/painel/clientes" method="post">
+    <label>
+      <span>Nome</span>
+      <input type="text" name="nome" placeholder="Ex.: Joao Silva" required>
+    </label>
+
+    <label>
+      <span>Telefone</span>
+      <input type="text" name="telefone" placeholder="Ex.: 85999999999">
+    </label>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Cadastrar cliente</button>
+    </div>
+  </form>
+</section>
+
+<section class="table-card">
+  <% if (clientes.length === 0) { %>
+    <p class="empty-state">Nenhum cliente cadastrado no banco.</p>
+  <% } else { %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% clientes.forEach((cliente) => { %>
+            <tr id="cliente-<%= cliente.id %>">
+              <td><strong><%= cliente.nome %></strong></td>
+              <td><%= cliente.telefone || 'Não informado' %></td>
+              <td class="actions">
+                <button class="button button--small" onclick="editarCliente('<%= cliente.id %>', '<%= cliente.nome %>', '<%= cliente.telefone || '' %>')">Editar</button>
+                <button class="button button--small button--danger" onclick="confirmarDelecao('/clientes/<%= cliente.id %>', 'cliente')">Deletar</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+</body>
+</html>

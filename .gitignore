@@ -72,3 +72,5 @@ docker-compose.override.yml
 *.zip
 *.tar
 *.gz
+*.sqlite
+*.db

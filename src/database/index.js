@@ -1,1 +1,0 @@
-export { default as sequelize } from '../config/orm.js';
