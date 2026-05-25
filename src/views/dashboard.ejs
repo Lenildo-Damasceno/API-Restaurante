@@ -13,7 +13,13 @@
     <h2>Visão geral do restaurante</h2>
     <p class="hero__text">Essa página é renderizada no servidor com EJS. Os estilos e scripts ficam em <code>public</code>.</p>
   </div>
-  <a class="button button--ghost" href="/status">Ver status JSON</a>
+  <div class="hero__actions">
+    <a class="button" href="/painel/clientes">Clientes</a>
+    <a class="button" href="/painel/pratos">Cardápio</a>
+    <a class="button" href="/painel/pedidos">Pedidos</a>
+    <a class="button" href="/painel/itens-pedido">Itens do Pedido</a>
+    <a class="button button--ghost" href="/status">Ver status JSON</a>
+  </div>
 </section>
 
 <section class="stats-grid">
@@ -61,7 +67,7 @@
 
   <article class="panel-card">
     <div class="panel-card__header">
-      <h3>Pratos em destaque</h3>
+      <h3>Cardápio</h3>
       <a href="/painel/pratos">Abrir página</a>
     </div>
 

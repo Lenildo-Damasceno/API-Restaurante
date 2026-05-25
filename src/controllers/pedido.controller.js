@@ -1,4 +1,4 @@
-import { Cliente, ItemPedido, Pedido } from '../models/index.js';
+import { Cliente, ItemPedido, Pedido, Prato } from '../models/index.js';
 import {
   criarErroHttp,
   criarId,
@@ -24,6 +24,23 @@ async function validarClienteDoPedido(idCliente) {
 }
 
 /**
+ * Valida se o prato informado existe.
+ */
+async function validarPrato(idPrato) {
+  if (!idPrato) {
+    return null
+  }
+
+  const prato = await Prato.findByPk(idPrato)
+
+  if (!prato) {
+    throw criarErroHttp('O prato informado nao existe.')
+  }
+
+  return idPrato
+}
+
+/**
  * Organiza e valida os dados completos do pedido.
  * Esse helper e usado no POST e no PUT.
  */
@@ -31,14 +48,16 @@ async function extrairDadosPedido(body) {
   const mesa = Number(body.mesa);
   const status = body.status?.trim() || 'aberto';
   const idCliente = body.idCliente?.trim() || null;
+  const idPrato = body.idPrato?.trim() || null;
 
   if (!Number.isInteger(mesa) || mesa <= 0) {
     throw criarErroHttp('O campo mesa deve ser um numero inteiro maior que zero.');
   }
 
   await validarClienteDoPedido(idCliente);
+  await validarPrato(idPrato);
 
-  return { mesa, status, idCliente };
+  return { mesa, status, idCliente, idPrato };
 }
 
 /**
@@ -110,14 +129,26 @@ export async function buscarPedidoPorId(req, res) {
 /**
  * Metodo POST
  * Cria um novo pedido com mesa, status e cliente opcional.
+ * Se idPrato for fornecido, cria automaticamente um item com quantidade 1.
  */
 export async function criarPedido(req, res) {
   try {
     const dadosPedido = await extrairDadosPedido(req.body)
+    const { idPrato, ...dadosPedidoSemPrato } = dadosPedido
+
     const pedido = await Pedido.create({
       id: criarId(),
-      ...dadosPedido
+      ...dadosPedidoSemPrato
     })
+
+    if (idPrato) {
+      await ItemPedido.create({
+        id: criarId(),
+        idPedido: pedido.id,
+        idPrato: idPrato,
+        quantidade: 1
+      })
+    }
 
     return res.status(201).json({
       message: 'Pedido criado com sucesso.',

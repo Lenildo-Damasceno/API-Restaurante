@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 let bdConexao = null
-
+// Cria uma conexão com o banco de dados usando as variáveis de ambiente para configuração
 try{
     bdConexao = await mysql.createConnection({ // createPool() para criar um pool de conexões
         host: process.env.DATABASE_HOST,

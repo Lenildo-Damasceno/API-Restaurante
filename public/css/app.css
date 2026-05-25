@@ -472,3 +472,17 @@ tbody tr:last-child td {
     grid-template-columns: 1fr;
   }
 }
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  align-items: flex-end;
+}

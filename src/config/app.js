@@ -24,6 +24,22 @@ app.use(express.static(path.join(rootDir, 'public'))) //middleware para arquivos
 app.set('view engine', 'ejs') // Configura o mecanismo de visualização para EJS
 app.set('views', path.join(__dirname, '../views')) // Configura o diretório onde estão as views (arquivos EJS)
 
+/**
+ * Middleware que verifica se o banco de dados está conectado.
+ * Se não estiver, retorna erro 503 (Service Unavailable).
+ */
+export function exigirBancoConectado(req, res, next) {
+  if (app.locals.statusBanco?.conectado) {
+    next()
+  } else {
+    console.error('❌ Banco de dados não está disponível')
+    res.status(503).json({
+      erro: 'Banco de dados indisponível',
+      mensagem: 'O serviço não está disponível no momento. Tente novamente mais tarde.'
+    })
+  }
+}
+
 // Testa conexão com o banco
 try {
   await sequelize.authenticate()
@@ -39,6 +55,9 @@ try {
   }
   console.error('❌ Erro ao conectar:', error.message)
 }
+
+// Aplica o middleware de verificação de banco em todas as rotas
+app.use(exigirBancoConectado)
 
 app.use('/', routes) // Usa as rotas definidas no arquivo de rotas para a raiz do aplicativo
 

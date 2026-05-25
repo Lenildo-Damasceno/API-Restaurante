@@ -10,6 +10,6 @@ await sincronizarBD()
 const port = process.env.EXPRESS_PORT 
 const host = process.env.EXPRESS_HOST 
 
-app.listen(port, host, () => {
+app.listen(port, host, () => { // servidor escutando na porta definida
     console.log(`Servidor em execução em: http://${host}:${port}`)
 })

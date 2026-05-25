@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { mostrarInicio, mostrarStatus } from '../controllers/home.controller.js';
-import { exigirBancoConectado } from '../config/middleware.js';
+import { exigirBancoConectado } from '../config/app.js';
 import pagesRoutes from './pages.routes.js';
 import clientesRoutes from './clientes.routes.js';
 import pratosRoutes from './pratos.routes.js';

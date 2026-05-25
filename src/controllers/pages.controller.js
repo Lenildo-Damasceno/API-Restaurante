@@ -107,20 +107,39 @@ async function validarClienteDoPedido(idCliente) {
 }
 
 /**
+ * Valida o prato opcional vinculado ao pedido.
+ */
+async function validarPrato(idPrato) {
+  if (!idPrato) {
+    return null
+  }
+
+  const prato = await Prato.findByPk(idPrato)
+
+  if (!prato) {
+    throw criarErroHttp('O prato selecionado nao existe.')
+  }
+
+  return idPrato
+}
+
+/**
  * Valida os dados do pedido enviados pelo formulario HTML.
  */
 async function extrairDadosPedido(body) {
   const mesa = Number(body.mesa);
   const status = body.status?.trim() || 'aberto';
   const idCliente = body.idCliente?.trim() || null;
+  const idPrato = body.idPrato?.trim() || null;
 
   if (!Number.isInteger(mesa) || mesa <= 0) {
     throw criarErroHttp('Informe um numero de mesa valido.');
   }
 
   await validarClienteDoPedido(idCliente);
+  await validarPrato(idPrato);
 
-  return { mesa, status, idCliente };
+  return { mesa, status, idCliente, idPrato };
 }
 
 /**
@@ -313,15 +332,26 @@ export async function cadastrarPratoPelaPagina(req, res) {
 
 /**
  * Processa o cadastro de pedido enviado pela tela EJS.
+ * Se idPrato for fornecido, cria automaticamente um item do pedido.
  */
 export async function cadastrarPedidoPelaPagina(req, res) {
   try {
     const dadosPedido = await extrairDadosPedido(req.body)
+    const { idPrato, ...dadosPedidoSemPrato } = dadosPedido
 
-    await Pedido.create({
+    const pedido = await Pedido.create({
       id: criarId(),
-      ...dadosPedido
+      ...dadosPedidoSemPrato
     })
+
+    if (idPrato) {
+      await ItemPedido.create({
+        id: criarId(),
+        idPedido: pedido.id,
+        idPrato: idPrato,
+        quantidade: 1
+      })
+    }
 
     return redirecionarComSucesso(res, '/painel/pedidos', 'Pedido cadastrado com sucesso.');
   } catch (error) {

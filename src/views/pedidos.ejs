@@ -11,15 +11,17 @@
 function confirmarDelecao(url, tipo) {
   if (confirm(`Tem certeza que deseja deletar este ${tipo}?`)) {
     fetch(url, { method: 'DELETE' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success || res.ok) {
-          location.reload();
-        } else {
-          alert('Erro ao deletar: ' + (data.message || 'Tente novamente'));
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Erro na resposta do servidor');
         }
+        return res.json();
       })
-      .catch(err => alert('Erro: ' + err.message));
+      .then(data => {
+        alert('Deletado com sucesso!');
+        location.reload();
+      })
+      .catch(err => alert('Erro ao deletar: ' + err.message));
   }
 }
 
@@ -35,15 +37,17 @@ function editarPedido(id, mesa, status) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ mesa: parseInt(novaMesa), status: novoStatus })
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success || res.ok) {
-        location.reload();
-      } else {
-        alert('Erro ao atualizar: ' + (data.message || 'Tente novamente'));
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Erro na resposta do servidor');
       }
+      return res.json();
     })
-    .catch(err => alert('Erro: ' + err.message));
+    .then(data => {
+      alert('Pedido atualizado com sucesso!');
+      location.reload();
+    })
+    .catch(err => alert('Erro ao atualizar: ' + err.message));
 }
 </script>
 </head>
@@ -54,7 +58,13 @@ function editarPedido(id, mesa, status) {
     <h2>Pedidos cadastrados</h2>
     <p>Pedidos com cliente e itens renderizados no servidor.</p>
   </div>
-  <span class="pill"><%= pedidos.length %> registro(s)</span>
+  <div class="hero__actions">
+    <a class="button" href="/painel">Dashboard</a>
+    <a class="button" href="/painel/clientes">Clientes</a>
+    <a class="button" href="/painel/pratos">Cardápio</a>
+    <a class="button" href="/painel/itens-pedido">Itens do Pedido</a>
+    <a class="button button--ghost" href="/status">Status</a>
+  </div>
 </section>
 
 <% if (feedback) { %>
@@ -64,77 +74,44 @@ function editarPedido(id, mesa, status) {
 <section class="form-card">
   <div class="panel-card__header">
     <div>
-      <p class="eyebrow">Cadastro</p>
+      <p class="eyebrow">Cadastro rápido</p>
       <h3>Novo pedido</h3>
     </div>
   </div>
 
-  <form class="form-grid form-grid--three" action="/painel/pedidos" method="post">
-    <label>
-      <span>Mesa</span>
-      <input type="number" min="1" name="mesa" placeholder="1" required>
-    </label>
+  <form class="form-grid" action="/painel/pedidos" method="post">
+    <div class="form-row">
+      <label>
+        <span>Cliente</span>
+        <select name="idCliente" required>
+          <option value="">Selecione um cliente</option>
+          <% clientes.forEach((cliente) => { %>
+            <option value="<%= cliente.id %>"><%= cliente.nome %></option>
+          <% }) %>
+        </select>
+      </label>
 
-    <label>
-      <span>Status</span>
-      <input type="text" name="status" placeholder="aberto">
-    </label>
+      <label>
+        <span>Mesa</span>
+        <input type="number" min="1" name="mesa" placeholder="1" required>
+      </label>
 
-    <label>
-      <span>Cliente</span>
-      <select name="idCliente">
-        <option value="">Sem cliente vinculado</option>
-        <% clientes.forEach((cliente) => { %>
-          <option value="<%= cliente.id %>"><%= cliente.nome %></option>
-        <% }) %>
-      </select>
-    </label>
+      <label>
+        <span>Prato pedido</span>
+        <select name="idPrato" required>
+          <option value="">Selecione um prato</option>
+          <% pratos.forEach((prato) => { %>
+            <option value="<%= prato.id %>"><%= prato.nome %></option>
+          <% }) %>
+        </select>
+      </label>
 
-     <div class="form-actions">
-       <button class="button" type="submit">Cadastrar pedido</button>
-     </div>
-   </form>
- </section>
-
- <section class="form-card">
-   <div class="panel-card__header">
-     <div>
-       <p class="eyebrow">Adicionar item</p>
-       <h3>Novo item ao pedido</h3>
-     </div>
-   </div>
-
-   <form class="form-grid form-grid--three" action="/painel/itens-pedido" method="post">
-     <label>
-       <span>Pedido</span>
-       <select name="idPedido" required>
-         <option value="">Selecione um pedido</option>
-         <% pedidos.forEach((pedido) => { %>
-           <option value="<%= pedido.id %>">Mesa <%= pedido.mesa %> - <%= pedido.cliente?.nome || 'Sem cliente' %></option>
-         <% }) %>
-       </select>
-     </label>
-
-     <label>
-       <span>Prato</span>
-       <select name="idPrato" required>
-         <option value="">Selecione um prato</option>
-         <% pratos.forEach((prato) => { %>
-           <option value="<%= prato.id %>"><%= prato.nome %></option>
-         <% }) %>
-       </select>
-     </label>
-
-     <label>
-       <span>Quantidade</span>
-       <input type="number" min="1" name="quantidade" placeholder="1" required>
-     </label>
-
-     <div class="form-actions">
-       <button class="button" type="submit">Adicionar item</button>
-     </div>
-   </form>
- </section>
+      <div class="form-actions">
+        <button class="button" type="submit">Criar pedido</button>
+      </div>
+    </div>
+  </form>
+</section>
 
  <section class="cards-grid cards-grid--wide">
   <% if (pedidos.length === 0) { %>

@@ -35,7 +35,7 @@ export default Prato
       from pratos
       order by nome asc
     `);
-  },
+  }
 
   /**
    * Busca um prato específico pelo identificador.

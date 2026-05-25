@@ -10,18 +10,17 @@ import {
   mostrarPaginaPedidos,
   mostrarPaginaPratos
 } from '../controllers/pages.controller.js';
-import { exigirBancoConectado } from '../config/middleware.js';
 
 const router = Router();
 
-router.get('/', exigirBancoConectado, mostrarDashboard);
-router.get('/clientes', exigirBancoConectado, mostrarPaginaClientes);
-router.post('/clientes', exigirBancoConectado, cadastrarClientePelaPagina);
-router.get('/pratos', exigirBancoConectado, mostrarPaginaPratos);
-router.post('/pratos', exigirBancoConectado, cadastrarPratoPelaPagina);
-router.get('/pedidos', exigirBancoConectado, mostrarPaginaPedidos);
-router.post('/pedidos', exigirBancoConectado, cadastrarPedidoPelaPagina);
-router.get('/itens-pedido', exigirBancoConectado, mostrarPaginaItensPedido);
-router.post('/itens-pedido', exigirBancoConectado, cadastrarItemPedidoPelaPagina);
+router.get('/', mostrarDashboard);
+router.get('/clientes', mostrarPaginaClientes);
+router.post('/clientes', cadastrarClientePelaPagina);
+router.get('/pratos', mostrarPaginaPratos);
+router.post('/pratos', cadastrarPratoPelaPagina);
+router.get('/pedidos', mostrarPaginaPedidos);
+router.post('/pedidos', cadastrarPedidoPelaPagina);
+router.get('/itens-pedido', mostrarPaginaItensPedido);
+router.post('/itens-pedido', cadastrarItemPedidoPelaPagina);
 
 export default router;

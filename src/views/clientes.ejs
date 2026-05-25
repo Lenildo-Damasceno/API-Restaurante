@@ -7,72 +7,41 @@
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<script>
-function confirmarDelecao(url, tipo) {
-  if (confirm(`Tem certeza que deseja deletar este ${tipo}?`)) {
-    fetch(url, { method: 'DELETE' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success || res.ok) {
-          location.reload();
-        } else {
-          alert('Erro ao deletar: ' + (data.message || 'Tente novamente'));
-        }
-      })
-      .catch(err => alert('Erro: ' + err.message));
-  }
-}
 
-function editarCliente(id, nome, telefone) {
-  const novoNome = prompt('Novo nome:', nome);
-  if (novoNome === null) return;
-  
-  const novoTelefone = prompt('Novo telefone:', telefone);
-  if (novoTelefone === null) return;
-  
-  fetch(`/clientes/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome: novoNome, telefone: novoTelefone })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success || res.ok) {
-        location.reload();
-      } else {
-        alert('Erro ao atualizar: ' + (data.message || 'Tente novamente'));
-      }
-    })
-    .catch(err => alert('Erro: ' + err.message));
-}
-</script>
-</head>
-<body>
+<!-- Navegação -->
 <section class="page-header">
   <div>
-    <p class="eyebrow">Página EJS</p>
-    <h2>Clientes cadastrados</h2>
-    <p>Lista dinâmica renderizada pelo servidor.</p>
+    <p class="eyebrow">Gestão de Dados</p>
+    <h2>Clientes</h2>
+    <p>Gerencie os clientes do seu restaurante.</p>
   </div>
-  <span class="pill"><%= clientes.length %> registro(s)</span>
+  <div class="hero__actions">
+    <a class="button" href="/painel">Dashboard</a>
+    <a class="button" href="/painel/pratos">Cardápio</a>
+    <a class="button" href="/painel/pedidos">Pedidos</a>
+    <a class="button" href="/painel/itens-pedido">Itens do Pedido</a>
+    <a class="button button--ghost" href="/status">Status</a>
+  </div>
 </section>
 
+<!-- Feedback -->
 <% if (feedback) { %>
   <section class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></section>
 <% } %>
 
+<!-- Formulário de Cadastro -->
 <section class="form-card">
   <div class="panel-card__header">
     <div>
-      <p class="eyebrow">Cadastro</p>
-      <h3>Novo cliente</h3>
+      <p class="eyebrow">Novo</p>
+      <h3>Cadastrar cliente</h3>
     </div>
   </div>
 
   <form class="form-grid" action="/painel/clientes" method="post">
     <label>
-      <span>Nome</span>
-      <input type="text" name="nome" placeholder="Ex.: Joao Silva" required>
+      <span>Nome *</span>
+      <input type="text" name="nome" placeholder="Ex.: João Silva" required>
     </label>
 
     <label>
@@ -81,14 +50,15 @@ function editarCliente(id, nome, telefone) {
     </label>
 
     <div class="form-actions">
-      <button class="button" type="submit">Cadastrar cliente</button>
+      <button class="button" type="submit">Cadastrar</button>
     </div>
   </form>
 </section>
 
+<!-- Tabela de Clientes -->
 <section class="table-card">
   <% if (clientes.length === 0) { %>
-    <p class="empty-state">Nenhum cliente cadastrado no banco.</p>
+    <p class="empty-state">Nenhum cliente cadastrado ainda.</p>
   <% } else { %>
     <div class="table-wrap">
       <table>
@@ -101,12 +71,12 @@ function editarCliente(id, nome, telefone) {
         </thead>
         <tbody>
           <% clientes.forEach((cliente) => { %>
-            <tr id="cliente-<%= cliente.id %>">
+            <tr>
               <td><strong><%= cliente.nome %></strong></td>
-              <td><%= cliente.telefone || 'Não informado' %></td>
+              <td><%= cliente.telefone || '—' %></td>
               <td class="actions">
-                <button class="button button--small" onclick="editarCliente('<%= cliente.id %>', '<%= cliente.nome %>', '<%= cliente.telefone || '' %>')">Editar</button>
-                <button class="button button--small button--danger" onclick="confirmarDelecao('/clientes/<%= cliente.id %>', 'cliente')">Deletar</button>
+                <button class="button button--small" data-id="<%= cliente.id %>" data-nome="<%= cliente.nome %>" data-telefone="<%= cliente.telefone || '' %>" onclick="abrirModalEditar(this)">Editar</button>
+                <button class="button button--small button--danger" onclick="deletarCliente('<%= cliente.id %>', '<%= cliente.nome %>')">Deletar</button>
               </td>
             </tr>
           <% }) %>
@@ -115,5 +85,55 @@ function editarCliente(id, nome, telefone) {
     </div>
   <% } %>
 </section>
+
+<script>
+function abrirModalEditar(button) {
+  const id = button.getAttribute('data-id');
+  const nome = button.getAttribute('data-nome');
+  const telefone = button.getAttribute('data-telefone');
+
+  const novoNome = prompt('Novo nome:', nome);
+  if (!novoNome) return;
+
+  const novoTelefone = prompt('Novo telefone:', telefone);
+  if (novoTelefone === null) return;
+
+  atualizarCliente(id, novoNome, novoTelefone);
+}
+
+function atualizarCliente(id, nome, telefone) {
+  fetch(`/clientes/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, telefone })
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao atualizar');
+      return res.json();
+    })
+    .then(data => {
+      alert('Cliente atualizado com sucesso!');
+      location.reload();
+    })
+    .catch(err => alert('Erro: ' + err.message));
+}
+
+function deletarCliente(id, nome) {
+  if (!confirm(`Tem certeza que deseja deletar "${nome}"?`)) return;
+
+  fetch(`/clientes/${id}`, { method: 'DELETE' })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao deletar');
+      return res.json();
+    })
+    .then(data => {
+      alert('Cliente deletado com sucesso!');
+      location.reload();
+    })
+    .catch(err => alert('Erro: ' + err.message));
+}
+</script>
+
 </body>
 </html>
+

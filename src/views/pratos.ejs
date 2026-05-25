@@ -11,15 +11,17 @@
 function confirmarDelecao(url, tipo) {
   if (confirm(`Tem certeza que deseja deletar este ${tipo}?`)) {
     fetch(url, { method: 'DELETE' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success || res.ok) {
-          location.reload();
-        } else {
-          alert('Erro ao deletar: ' + (data.message || 'Tente novamente'));
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Erro na resposta do servidor');
         }
+        return res.json();
       })
-      .catch(err => alert('Erro: ' + err.message));
+      .then(data => {
+        alert('Deletado com sucesso!');
+        location.reload();
+      })
+      .catch(err => alert('Erro ao deletar: ' + err.message));
   }
 }
 
@@ -38,15 +40,17 @@ function editarPrato(id, nome, categoria, preco) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nome: novoNome, categoria: novaCategoria, preco: parseFloat(novoPreco) })
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success || res.ok) {
-        location.reload();
-      } else {
-        alert('Erro ao atualizar: ' + (data.message || 'Tente novamente'));
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Erro na resposta do servidor');
       }
+      return res.json();
     })
-    .catch(err => alert('Erro: ' + err.message));
+    .then(data => {
+      alert('Prato atualizado com sucesso!');
+      location.reload();
+    })
+    .catch(err => alert('Erro ao atualizar: ' + err.message));
 }
 </script>
 </head>
@@ -57,7 +61,13 @@ function editarPrato(id, nome, categoria, preco) {
     <h2>Pratos cadastrados</h2>
     <p>Lista dinâmica com os pratos armazenados no banco.</p>
   </div>
-  <span class="pill"><%= pratos.length %> registro(s)</span>
+  <div class="hero__actions">
+    <a class="button" href="/painel">Dashboard</a>
+    <a class="button" href="/painel/clientes">Clientes</a>
+    <a class="button" href="/painel/pedidos">Pedidos</a>
+    <a class="button" href="/painel/itens-pedido">Itens do Pedido</a>
+    <a class="button button--ghost" href="/status">Status</a>
+  </div>
 </section>
 
 <% if (feedback) { %>

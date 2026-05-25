@@ -1,4 +1,4 @@
-import { Cliente } from '../models/index.js';
+import { Cliente, Pedido } from '../models/index.js';
 import {
   criarErroHttp,
   criarId,
@@ -109,7 +109,7 @@ export async function criarCliente(req, res) {
  */
 export async function atualizarCliente(req, res) {
   try {
-    const cliente = await Cliente.findByPk(req.params.id)
+    const cliente = await Cliente.findByPk(req.params.id) // metodo get para buscar o cliente pelo ID
 
     if (!cliente) {
       return responderNaoEncontrado(res, 'Cliente')
