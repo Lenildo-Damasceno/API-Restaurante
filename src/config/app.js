@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import routes from '../routes/index.js'
 import sequelize from './orm.js'
+import User from '../models/modelUSER.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -23,6 +24,7 @@ app.use(express.urlencoded({extended: true})) //middleware para fazer o parsear 
 app.use(express.static(path.join(rootDir, 'public'))) //middleware para arquivos estáticos (como HTML, CSS, JS) da pasta 'public'
 app.set('view engine', 'ejs') // Configura o mecanismo de visualização para EJS
 app.set('views', path.join(__dirname, '../views')) // Configura o diretório onde estão as views (arquivos EJS)
+app.User = User // Torna o modelo User acessível em todo o aplicativo através de app.User
 
 /**
  * Middleware que verifica se o banco de dados está conectado.

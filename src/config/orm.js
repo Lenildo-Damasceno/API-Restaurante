@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize'
+import Sequelize  from 'sequelize'
 // Configura a conexão com o banco de dados usando Sequelize e SQLite
 const sequelize = new Sequelize({
     dialect: 'sqlite',
