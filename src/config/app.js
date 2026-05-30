@@ -6,6 +6,8 @@ import routes from '../routes/index.js'
 import sequelize from './orm.js'
 import User from '../models/modelUSER.js'
 
+
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '../../')
@@ -31,6 +33,10 @@ app.User = User // Torna o modelo User acessível em todo o aplicativo através 
  * Se não estiver, retorna erro 503 (Service Unavailable).
  */
 export function exigirBancoConectado(req, res, next) {
+  if (req.path.startsWith('/login')) {
+    return next()
+  }
+
   if (app.locals.statusBanco?.conectado) {
     next()
   } else {

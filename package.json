@@ -21,12 +21,13 @@
   },
   "homepage": "https://github.com/Lenildo-Damasceno/API-Restaurante#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "morgan": "^1.10.1",
-    "sequelize": "^6.37.8",
+    "sequelize": "^3.30.0",
     "sqlite3": "^6.0.1",
     "uuid": "^14.0.0"
   },

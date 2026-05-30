@@ -1,5 +1,7 @@
 import sequelize from "../config/orm.js";
-import {DataTypes} from "sequelize";
+import Sequelize from "sequelize";
+
+const { DataTypes } = Sequelize;
 
 const User = sequelize.define('User', {
     idUser: {

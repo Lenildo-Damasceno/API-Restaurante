@@ -1,5 +1,7 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/orm.js';
+import Sequelize from 'sequelize';
+import sequelize from '../config/orm.js';
+
+const { DataTypes } = Sequelize;
 
 /**
  * Reúne as consultas SQL ligadas à entidade cliente.

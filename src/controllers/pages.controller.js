@@ -188,8 +188,12 @@ export async function mostrarDashboard(req, res, next) {
       Prato.findAll(),
       Pedido.findAll({
         include: [
-          { association: 'cliente' },
-          { association: 'itens', include: ['prato'] }
+          { model: Cliente, as: 'cliente' },
+          {
+            model: ItemPedido,
+            as: 'itens',
+            include: [{ model: Prato, as: 'prato' }]
+          }
         ]
       }),
       ItemPedido.findAll()
@@ -251,8 +255,12 @@ export async function mostrarPaginaPedidos(req, res, next) {
     const [pedidos, clientes, pratos] = await Promise.all([
       Pedido.findAll({
         include: [
-          { association: 'cliente' },
-          { association: 'itens', include: ['prato'] }
+          { model: Cliente, as: 'cliente' },
+          {
+            model: ItemPedido,
+            as: 'itens',
+            include: [{ model: Prato, as: 'prato' }]
+          }
         ]
       }),
       Cliente.findAll(),
@@ -277,7 +285,10 @@ export async function mostrarPaginaItensPedido(req, res, next) {
   try {
     const [itensPedido, pedidos, pratos] = await Promise.all([
       ItemPedido.findAll({
-        include: ['prato', 'pedido']
+        include: [
+          { model: Prato, as: 'prato' },
+          { model: Pedido, as: 'pedido' }
+        ]
       }),
       Pedido.findAll(),
       Prato.findAll()

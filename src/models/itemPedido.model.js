@@ -1,5 +1,7 @@
-import { DataTypes } from 'sequelize'
+import Sequelize from 'sequelize'
 import sequelize from '../config/orm.js'
+
+const { DataTypes } = Sequelize
 
 const ItemPedido = sequelize.define('ItemPedido', {
   id: {

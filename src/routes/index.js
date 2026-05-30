@@ -6,7 +6,8 @@ import clientesRoutes from './clientes.routes.js';
 import pratosRoutes from './pratos.routes.js';
 import pedidosRoutes from './pedidos.routes.js';
 import itensPedidoRoutes from './itensPedido.routes.js';
-import routeUser from './rotaUser.js';
+import routeUser from './user.routes.js';
+import routeLogin from './login.routes.js';
 
 const router = Router();
 
@@ -18,4 +19,7 @@ router.use('/pratos', exigirBancoConectado, pratosRoutes);
 router.use('/pedidos', exigirBancoConectado, pedidosRoutes);
 router.use('/itens-pedido', exigirBancoConectado, itensPedidoRoutes);
 router.use('/User', routeUser);
+router.use('/login', routeLogin);
+
+
 export default router;
