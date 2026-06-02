@@ -44,3 +44,69 @@ export const cadastrarUsuario = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao abrir pagina de cadastro' })
     }
 }
+
+export const atualizarUsuario = async (req, res) => {
+    const id = req.params.id
+    const { nome, email, senha } = req.body
+
+    try {
+        const usuarioBD = await User.findOne({ where: { email } })
+
+        if (!usuarioBD) {
+            return res.status(404).json({ message: 'Usuario nao encontrado.' })
+        }
+        const senhaCriptografada = await bcrypt.hash(senha, 10)
+        await User.update({ nome, email, password: senhaCriptografada }, { where: { idUser: id } })
+        return res.status(200).json({ message: 'Usuario atualizado com sucesso.' })
+    } catch (error) {
+        console.error('Erro ao atualizar usuario:', error)
+        return res.status(500).json({ message: 'Erro ao atualizar usuario.' })
+    }}
+       
+
+
+    
+
+export const removerUser = async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const usuario = await User.findByPk(id)
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuario nao encontrado.' })
+        }
+
+        await User.destroy({ where: { idUser: id } })
+        return res.status(200).json({ message: 'Usuario removido com sucesso.' })
+    } catch (error) {
+        console.error('Erro ao remover usuario:', error)
+        return res.status(500).json({ message: 'Erro ao remover usuario.' })
+    }
+}
+
+
+export const editarParcial = async (req, res) => {
+    const id = req.params.id
+    
+    try {
+        const usuarioNovo = {}
+        const { nome, email, senha } = req.body
+
+        if (nome) usuarioNovo.nome = nome
+        if (email) usuarioNovo.email = email
+        if (senha) {
+            const senhaCriptografada = await bcrypt.hash(senha, 10)
+            usuarioNovo.password = senhaCriptografada
+            }
+        const usuarioBD = await User.findOne({ where: { idUser: id } })
+        if(!usuarioBD) {
+            return res.status(404).json({ message: 'Usuario nao encontrado.' })
+        }
+        await User.update(usuarioNovo, { where: { idUser: id } })
+        return res.status(200).json({ message: 'Usuario atualizado com sucesso.' })
+    } catch (error) {
+        console.error('Erro ao atualizar usuario:', error)
+        return res.status(500).json({ message: 'Erro ao atualizar usuario.' })
+    }
+} 
