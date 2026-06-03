@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Lenildo-Damasceno/API-Restaurante#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-sqlite3": "^0.9.16",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",

@@ -20,15 +20,90 @@ export const validarLogin = async (req, res) => {
             return res.status(401).json({ message: 'Usuario nao encontrado.' })
         }
 
-        const senhaValida = await bcrypt.compare(password, usuario.password)
+  const senhaValida = await bcrypt.compare(password, usuario.password)
 
-        if (!senhaValida) {
-            return res.redirect('/login?erro=Senha invalida')
-        }
+if (!senhaValida) {
+    return res.redirect('/login?erro=Senha invalida')
+}
 
-        return res.redirect('/painel')
-    } catch (error) {
+req.session.regenerate((err) => {
+    if (err) {
+        console.error('Erro ao regenerar sessao:', err)
+        return res.status(500).json({ message: 'Erro ao criar sessao.' })
+    }
+    req.session.userId = {
+        id: usuario.idUser,
+        nome: usuario.nome,
+        email: usuario.email
+    }
+    return res.redirect('/painel')
+})
+    }
+     catch (error) {
         console.error('Erro ao validar login:', error)
         return res.status(500).json({ message: 'Erro ao validar login.' })
     }
 }
+
+
+export const logout = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Erro ao destruir sessao:', err)
+            return res.status(500).json({ message: 'Erro ao fazer logout.' })
+        }
+        res.clearCookie('connect.sid') // Limpa o cookie de sessao
+        return res.redirect('/login')
+    })
+}
+
+
+export const telaRecuperarSenha = (req, res) => {
+  return res.sendFile(path.resolve('./public/html/recuperar_senha.html'))
+}
+
+
+
+// Esta funcao pode ser expandida para enviar um email de recuperacao de senha ou gerar um token de redefinicao
+export const recuperarSenha = async (req, res) => {
+  const { email } = req.body
+
+  if (!email) {
+    return res.status(400).json({ message: 'Informe o e-mail.' })
+  }
+
+  const usuario = await User.findOne({ where: { email } })
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuario nao encontrado.' })
+  }
+
+ return res.redirect(`/login/nova-senha?email=${encodeURIComponent(email)}`)
+}
+
+export const telaNovaSenha = (req, res) => {
+  return res.sendFile(path.resolve('./public/html/nova_senha.html'))
+}
+
+export const salvarNovaSenha = async (req, res) => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'E-mail e nova senha sao obrigatorios.' })
+  }
+
+  const usuario = await User.findOne({ where: { email } })
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuario nao encontrado.' })
+  }
+
+  const senhaCriptografada = await bcrypt.hash(password, 10)
+
+  usuario.password = senhaCriptografada
+  await usuario.save()
+
+  return res.redirect('/login')
+}
+
+export const lougout = logout

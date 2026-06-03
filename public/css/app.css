@@ -177,8 +177,11 @@ code {
 
 .button {
   padding: 12px 18px;
+  border: 0;
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
   color: white;
+  cursor: pointer;
+  font: inherit;
 }
 
 .button--ghost,
@@ -478,6 +481,11 @@ tbody tr:last-child td {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+}
+
+.hero__actions form,
+.landing__actions form {
+  margin: 0;
 }
 
 .form-row {
