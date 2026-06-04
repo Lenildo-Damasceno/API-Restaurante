@@ -21,12 +21,22 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING(100),
         allowNull: false
+    },
+    perfil: { // 'admin' ou 'cliente'
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        charset: 'utf8',
+        collate: 'utf8_general_ci'
     }
-}, {
+}, 
+
+{
     tableName: 'users', // nome da tabela no banco de dados
     timestamps: false, // desativa os campos createdAt e updatedAt
     charset: 'utf8',
     collate: 'utf8_general_ci'
 })
+
+
 
 export default User;

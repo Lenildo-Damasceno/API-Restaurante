@@ -10,7 +10,7 @@
 <section class="hero">
   <div>
     <p class="eyebrow">Painel Dinâmico</p>
-    <h2>Visão geral do restaurante</h2>
+    <h2>Bem-vindo<%= usuario?.nome ? `, ${usuario.nome}` : '' %></h2>
     <p class="hero__text">Essa página é renderizada no servidor com EJS. Os estilos e scripts ficam em <code>public</code>.</p>
   </div>
   <div class="hero__actions">

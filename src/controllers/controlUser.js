@@ -18,6 +18,8 @@ export const criarUsuario = async (req, res) => {
         const email = req.body.email
         const senha = req.body.senha || req.body.password
         const confirmarSenha = req.body.confirmarSenha || req.body.confirmPassword
+        const perfil = req.body.perfil || 'cliente'
+
 
         if (!nome || !email || !senha) {
             return res.status(400).json({ error: 'Nome, email e senha sao campos obrigatorios' })
@@ -28,7 +30,7 @@ export const criarUsuario = async (req, res) => {
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
-        await User.create({ nome, email, password: senhaCriptografada })
+        await User.create({ nome, email, password: senhaCriptografada, perfil })
         return res.status(201).json({ message: 'Usuario criado com sucesso' })
     } catch (error) {
         console.error('Erro ao criar usuario:', error)
@@ -47,7 +49,7 @@ export const cadastrarUsuario = async (req, res) => {
 
 export const atualizarUsuario = async (req, res) => {
     const id = req.params.id
-    const { nome, email, senha } = req.body
+    const { nome, email, senha , perfil} = req.body
 
     try {
         const usuarioBD = await User.findOne({ where: { email } })
@@ -56,7 +58,7 @@ export const atualizarUsuario = async (req, res) => {
             return res.status(404).json({ message: 'Usuario nao encontrado.' })
         }
         const senhaCriptografada = await bcrypt.hash(senha, 10)
-        await User.update({ nome, email, password: senhaCriptografada }, { where: { idUser: id } })
+        await User.update({ nome, email, password: senhaCriptografada, perfil }, { where: { idUser: id } })
         return res.status(200).json({ message: 'Usuario atualizado com sucesso.' })
     } catch (error) {
         console.error('Erro ao atualizar usuario:', error)
@@ -91,7 +93,7 @@ export const editarParcial = async (req, res) => {
     
     try {
         const usuarioNovo = {}
-        const { nome, email, senha } = req.body
+        const { nome, email, senha, perfil } = req.body
 
         if (nome) usuarioNovo.nome = nome
         if (email) usuarioNovo.email = email

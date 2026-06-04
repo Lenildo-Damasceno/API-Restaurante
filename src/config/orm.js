@@ -18,7 +18,7 @@ conexaoBD()
 // Exporta a função de sincronização do banco de dados para ser usada em outros arquivos
 export const sincronizarBD = async () => {
     try {
-        await sequelize.sync({ force: false })
+        await sequelize.sync({ force: false }) // Use force: true para recriar as tabelas a cada execução (cuidado com dados existentes)
         console.log('Banco de dados sincronizado com sucesso!')
     } catch (error) {
         console.error('Erro ao sincronizar o banco de dados: ', error)

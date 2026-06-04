@@ -6,6 +6,8 @@ export const login = (req, res) => {
     return res.sendFile(path.resolve('./public/html/login.html'))
 }
 
+
+// Esta funcao pode ser expandida para incluir validacao de captcha, limitacao de tentativas ou autenticao multifator
 export const validarLogin = async (req, res) => {
     const { email, password } = req.body
 
@@ -34,7 +36,8 @@ req.session.regenerate((err) => {
     req.session.userId = {
         id: usuario.idUser,
         nome: usuario.nome,
-        email: usuario.email
+        email: usuario.email,
+        perfil: usuario.perfil
     }
     return res.redirect('/painel')
 })
@@ -46,6 +49,9 @@ req.session.regenerate((err) => {
 }
 
 
+
+
+// Esta funcao pode ser expandida para invalidar tokens de autenticacao ou limpar caches relacionados ao usuario
 export const logout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -57,7 +63,7 @@ export const logout = (req, res) => {
     })
 }
 
-
+//  Esta funcao pode ser expandida para enviar um email de recuperacao de senha ou gerar um token de redefinicao
 export const telaRecuperarSenha = (req, res) => {
   return res.sendFile(path.resolve('./public/html/recuperar_senha.html'))
 }
@@ -81,10 +87,16 @@ export const recuperarSenha = async (req, res) => {
  return res.redirect(`/login/nova-senha?email=${encodeURIComponent(email)}`)
 }
 
+
+
+// Esta funcao pode ser expandida para validar um token de redefinicao de senha
 export const telaNovaSenha = (req, res) => {
   return res.sendFile(path.resolve('./public/html/nova_senha.html'))
 }
 
+
+
+// Esta funcao pode ser expandida para validar um token de redefinicao de senha
 export const salvarNovaSenha = async (req, res) => {
   const { email, password } = req.body
 

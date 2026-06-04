@@ -207,6 +207,7 @@ export async function mostrarDashboard(req, res, next) {
         pedidos: pedidos.length,
         itensPedido: itensPedido.length
       },
+      usuario: req.session.userId,
       pedidosRecentes: pedidos.slice(0, 5),
       pratosDestaque: pratos.slice(0, 5)
     });
