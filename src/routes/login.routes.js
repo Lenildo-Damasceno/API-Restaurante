@@ -14,3 +14,4 @@ routeLogin.get('/nova-senha', telaNovaSenha)
 routeLogin.post('/nova-senha', salvarNovaSenha)
 
 export default routeLogin;
+

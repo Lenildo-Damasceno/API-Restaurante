@@ -7,6 +7,7 @@ import sequelize from './orm.js'
 import User from '../models/modelUSER.js'
 import session from 'express-session'
 import connectSqlite3 from 'connect-sqlite3'
+import { apagarCache } from '../middlewares/authUser.js'
 
 const SQLiteStore = connectSqlite3(session)
 const __filename = fileURLToPath(import.meta.url)
@@ -20,7 +21,7 @@ app.locals.statusBanco = {
   conectado: false,
   ultimaMensagem: 'Conectando ao banco de dados...'
 }
-
+app.use = (apagarCache, app.use)
 app.use(morgan('dev')) // middleware de logging
 app.use(express.json()) // middleware para fazer o parsear JSON no corpo das requisicoes
 app.use(express.urlencoded({ extended: true })) // middleware para fazer o parsear dados de formularios
