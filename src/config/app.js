@@ -21,7 +21,7 @@ app.locals.statusBanco = {
   conectado: false,
   ultimaMensagem: 'Conectando ao banco de dados...'
 }
-app.use = (apagarCache, app.use)
+app.use(apagarCache)
 app.use(morgan('dev')) // middleware de logging
 app.use(express.json()) // middleware para fazer o parsear JSON no corpo das requisicoes
 app.use(express.urlencoded({ extended: true })) // middleware para fazer o parsear dados de formularios
