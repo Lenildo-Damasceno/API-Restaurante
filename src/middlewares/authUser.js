@@ -1,26 +1,26 @@
-import  User  from '../models/User.js'
+import User from '../models/modelUSER.js'
 
 
-const perfils =['adminitrador','cliente','funcionario','gerente']
+const perfils = ['administrador', 'cliente', 'funcionario', 'gerente']
 
 
 export const autenticar = async (req,res,next) => {
     if (!req.session.userId) 
         return res.redirect('/login')
 
-        const user = await User.findByPk(req.session.userId)
+        const user = await User.findByPk(req.session.userId.id)
         if (!user) {
             return res.redirect('/login')
         }
         req.user = user
         next()
-
 }
+
 export const validarPerfil = (perfisPermitidos) => {
     return (req, res, next) => {
-        const perfilUsuario = req.session.userPerfil
+        const perfilUsuario = req.session.userId?.perfil
 
-        if (!perfilUsuario || !perfis.includes(perfilUsuario)) {
+        if (!perfilUsuario || !perfisPermitidos.includes(perfilUsuario)) {
             return res.status(403).send('Acesso negado')
         }
 
