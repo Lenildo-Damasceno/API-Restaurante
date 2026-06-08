@@ -88,23 +88,11 @@ try {
 // Aplica o middleware de verificacao de banco em todas as rotas
 app.use(exigirBancoConectado)
 
-app.use('/', routes) // Usa as rotas definidas no arquivo de rotas para a raiz do aplicativo
-
+// Rota raiz: Como não há tela inicial, redirecionamos para o login ou painel
 app.get('/', (req, res) => {
-  res.render('index', {
-    login: {},
-    statusBanco: app.locals.statusBanco,
-    title: 'API-Restaurante',
-    message: 'O painel dinamico depende do banco conectado.',
-    endpoints: [
-      'GET /status',
-      'GET /painel',
-      'GET /painel/clientes',
-      'GET /painel/pratos',
-      'GET /painel/pedidos',
-      'GET /painel/itens-pedido'
-    ]
-  })
+  res.redirect('/login')
 })
+
+app.use('/', routes) // Usa as rotas definidas no arquivo de rotas
 
 export default app
