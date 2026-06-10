@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="/css/app.css">
-</head>
-<body>
-<section class="hero">
-  <div>
-    <p class="eyebrow">Painel Dinâmico</p>
-    <h2>Bem-vindo<%= usuario?.nome ? `, ${usuario.nome}` : '' %></h2>
-    <p class="hero__text">Essa página é renderizada no servidor com EJS. Os estilos e scripts ficam em <code>public</code>.</p>
-  </div>
-  <div class="hero__actions">
-    <a class="button" href="/painel/clientes">Clientes</a>
-    <a class="button" href="/painel/pratos">Cardápio</a>
-    <a class="button" href="/painel/pedidos">Pedidos</a>
-    <a class="button" href="/painel/itens-pedido">Itens do Pedido</a>
-    <a class="button button--ghost" href="/status">Ver status JSON</a>
-    <form action="/login/logout" method="post">
-      <button class="button button--ghost" type="submit">Sair</button>
-    </form>
-  </div>
-</section>
+<%- include('_header', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
 
 <section class="stats-grid">
   <article class="stat-card">
@@ -39,7 +14,7 @@
     <h3><%= resumo.pedidos %></h3>
   </article>
   <article class="stat-card">
-    <p class="stat-card__label">Itens do pedido</p>
+    <p class="stat-card__label">Itens do Pedido</p>
     <h3><%= resumo.itensPedido %></h3>
   </article>
 </section>
@@ -48,9 +23,8 @@
   <article class="panel-card">
     <div class="panel-card__header">
       <h3>Pedidos recentes</h3>
-      <a href="/painel/pedidos">Abrir página</a>
+      <a href="/painel/pedidos">Ver todos</a>
     </div>
-
     <% if (pedidosRecentes.length === 0) { %>
       <p class="empty-state">Nenhum pedido cadastrado ainda.</p>
     <% } else { %>
@@ -71,9 +45,8 @@
   <article class="panel-card">
     <div class="panel-card__header">
       <h3>Cardápio</h3>
-      <a href="/painel/pratos">Abrir página</a>
+      <a href="/painel/pratos">Ver todos</a>
     </div>
-
     <% if (pratosDestaque.length === 0) { %>
       <p class="empty-state">Nenhum prato cadastrado ainda.</p>
     <% } else { %>
@@ -91,5 +64,5 @@
     <% } %>
   </article>
 </section>
-</body>
-</html>
+
+<%- include('_footer') %>

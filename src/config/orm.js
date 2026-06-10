@@ -1,9 +1,18 @@
-import Sequelize  from 'sequelize'
-// Configura a conexão com o banco de dados usando Sequelize e SQLite
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './src/database/restaurante.sqlite'
-})
+import Sequelize from 'sequelize'
+
+const isProducao = process.env.NODE_ENV === 'production'
+
+const sequelize = isProducao
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      dialectOptions: { ssl: { require: true, rejectUnauthorized: false } },
+      logging: false
+    })
+  : new Sequelize({
+      dialect: 'sqlite',
+      storage: './src/database/restaurante.sqlite',
+      logging: false
+    })
 // Testa a conexão com o banco de dados
 const conexaoBD = async () => {
     try {

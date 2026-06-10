@@ -9,8 +9,8 @@ dotenv.config()
 await sincronizarBD()
 
 // Inicia o servidor Express
-const port = process.env.EXPRESS_PORT 
-const host = process.env.EXPRESS_HOST 
+const port = process.env.PORT || process.env.EXPRESS_PORT
+const host = process.env.EXPRESS_HOST || '0.0.0.0'
 
 app.listen(port, host, () => { // servidor escutando na porta definida
     console.log(`Servidor em execução em: http://${host}:${port}`)

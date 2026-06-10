@@ -19,12 +19,4 @@ export function mostrarInicio(req, res) {
   });
 }
 
-/**
- * Retorna o status atual da API e da conexão com o banco de dados.
- */
-export function mostrarStatus(req, res) {
-  res.json({
-    api: 'online',
-    banco: req.app.locals.statusBanco
-  });
-}
+

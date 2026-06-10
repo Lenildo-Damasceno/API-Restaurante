@@ -3,7 +3,7 @@ import { login, validarLogin, logout, lougout, telaRecuperarSenha, recuperarSenh
 import { autenticar } from '../middlewares/authUser.js';
 const routeLogin = express.Router();
 
-routeLogin.get('/', login,autenticar);
+routeLogin.get('/', login);
 routeLogin.post('/', validarLogin);
 routeLogin.get('/validar', validarLogin);
 routeLogin.post('/logout', autenticar, logout);
