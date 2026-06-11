@@ -8,8 +8,15 @@ console.log('Iniciando sincronização das tabelas...')
 await sincronizarBD()
 
 // Inicia o servidor Express
-const port = process.env.PORT || process.env.EXPRESS_PORT
-const host = process.env.EXPRESS_HOST || '0.0.0.0'
+let port = process.env.PORT || process.env.EXPRESS_PORT
+let host = process.env.EXPRESS_HOST || '0.0.0.0'
+
+if (process.env.NODE_ENV === 'development') {
+    port = 3000
+    host = 'localhost'
+} else {
+    host = '0.0.0.0'
+}
 
 app.listen(port, host, () => { // servidor escutando na porta definida
     console.log(`Servidor em execução em: http://${host}:${port}`)
