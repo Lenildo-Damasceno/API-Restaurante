@@ -1,5 +1,13 @@
 <%- include('_header', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
 
+<% if (usuario && usuario.perfil === 'admin') { %>
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="/User/cadastroUsuario" class="button">
+      <span class="icon">👤+</span> Cadastrar Novo Usuário
+    </a>
+  </div>
+<% } %>
+
 <section class="stats-grid">
   <article class="stat-card">
     <p class="stat-card__label">Clientes</p>

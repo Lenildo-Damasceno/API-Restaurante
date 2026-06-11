@@ -38,7 +38,8 @@ function montarViewBase(req, pageTitle, currentPath) {
     currentPath,
     navegacao: montarNavegacao(),
     statusBanco: req.app.locals.statusBanco,
-    feedback: lerFeedback(req)
+    feedback: lerFeedback(req),
+    usuario: req.session.userId // Passa os dados do usuário logado para o EJS
   };
 }
 

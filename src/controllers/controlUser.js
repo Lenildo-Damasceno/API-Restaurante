@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import path from 'path'
 import User from '../models/modelUSER.js'
 
 export async function listarUsuarios(req, res) {
@@ -14,33 +13,41 @@ export async function listarUsuarios(req, res) {
 
 export const criarUsuario = async (req, res) => {
     try {
-        const nome = req.body.nome || req.body.username
+        const nome = req.body.nome || req.body.username // Aceita 'nome' (EJS) ou 'username' (HTML)
         const email = req.body.email
-        const senha = req.body.senha || req.body.password
+        const senha = req.body.senha || req.body.password // Aceita 'senha' ou 'password'
         const confirmarSenha = req.body.confirmarSenha || req.body.confirmPassword
         const perfil = req.body.perfil || 'cliente'
 
-
         if (!nome || !email || !senha) {
-            return res.status(400).json({ error: 'Nome, email e senha sao campos obrigatorios' })
+            return res.redirect(`/User/cadastroUsuario?error=${encodeURIComponent('Nome, email e senha são obrigatórios.')}`)
         }
 
         if (confirmarSenha && senha !== confirmarSenha) {
-            return res.status(400).json({ error: 'As senhas nao conferem' })
+            return res.redirect(`/User/cadastroUsuario?error=${encodeURIComponent('As senhas não conferem.')}`)
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
         await User.create({ nome, email, password: senhaCriptografada, perfil })
-        return res.status(201).json({ message: 'Usuario criado com sucesso' })
+        
+        // Redireciona para o painel com mensagem de sucesso
+        return res.redirect('/painel?success=' + encodeURIComponent('Usuário criado com sucesso!'))
+
     } catch (error) {
         console.error('Erro ao criar usuario:', error)
-        return res.status(500).json({ error: 'Erro ao criar usuario' })
+        return res.redirect('/painel?error=' + encodeURIComponent('Erro ao criar usuário.'))
     }
 }
 
 export const cadastrarUsuario = async (req, res) => {
     try {
-        return res.sendFile(path.resolve('./public/html/cadastro_Usuario.html'))
+        return res.render('cadastro-usuario', {
+            pageTitle: 'Cadastrar Usuário',
+            currentPath: req.originalUrl,
+            usuario: req.session.userId,
+            statusBanco: req.app.locals.statusBanco,
+            feedback: null
+        });
     } catch (error) {
         console.error('Erro ao enviar arquivo de cadastro:', error)
         return res.status(500).json({ error: 'Erro ao abrir pagina de cadastro' })

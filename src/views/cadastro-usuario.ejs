@@ -1,0 +1,38 @@
+<%- include('_header', { pageTitle: 'Novo Usuário', activePage: 'dashboard' }) %>
+
+<section class="form-card">
+  <div class="panel-card__header">
+    <div>
+      <p class="eyebrow">Administração</p>
+      <h3>Cadastrar Novo Usuário</h3>
+    </div>
+  </div>
+  
+  <form class="form-grid" action="/User" method="post">
+    <label>
+      <span>Nome Completo *</span>
+      <input type="text" name="nome" placeholder="Ex.: Admin do Sistema" required>
+    </label>
+    <label>
+      <span>E-mail *</span>
+      <input type="email" name="email" placeholder="email@restaurante.com" required>
+    </label>
+    <label>
+      <span>Senha *</span>
+      <input type="password" name="senha" required>
+    </label>
+    <label>
+      <span>Perfil de Acesso *</span>
+      <select name="perfil">
+        <option value="cliente">Cliente</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </label>
+    
+    <div class="form-actions">
+      <button class="button" type="submit">Finalizar Cadastro</button>
+    </div>
+  </form>
+</section>
+
+<%- include('_footer') %>

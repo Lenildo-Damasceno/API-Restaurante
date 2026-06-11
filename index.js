@@ -1,11 +1,10 @@
 // index.js - Ponto de entrada da aplicação
+import 'dotenv/config' // Carrega as variáveis de ambiente IMEDIATAMENTE
 import app from './src/config/app.js'
-import dotenv from 'dotenv'
 import { sincronizarBD } from './src/config/orm.js'
 
-dotenv.config()
-
 // Sincroniza o banco de dados
+console.log('Iniciando sincronização das tabelas...')
 await sincronizarBD()
 
 // Inicia o servidor Express

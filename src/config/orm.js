@@ -1,31 +1,34 @@
 import Sequelize from 'sequelize'
 
-// ============================================================
-// NOVO (PostgreSQL + Neon):
-// process.env.NODE_ENV === 'production' verifica se estamos
-// rodando no Render. Se sim, usa o PostgreSQL pelo DATABASE_URL.
-// Se não (desenvolvimento local), continua usando o SQLite.
-// ============================================================
-const isProducao = process.env.NODE_ENV === 'production'
 
-// NOVO (PostgreSQL): conexão com o banco do Neon via DATABASE_URL
-const sequelize = isProducao
+
+
+
+const isProd = process.env.NODE_ENV === 'production'
+
+// Usa Neon em produção, SQLite em desenvolvimento
+const sequelize = isProd
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',           // NOVO: dialeto trocado de sqlite para postgres
       dialectOptions: {
-        ssl: { require: true, rejectUnauthorized: false } // NOVO: Neon exige SSL
+        ssl: { rejectUnauthorized: false },
+        keepAlive: true              // Ajuda a manter a conexão estável com o Neon
+      },
+      pool: {
+        max: 5,                      // Máximo de conexões simultâneas
+        min: 0,
+        acquire: 30000,              // Tempo máximo (ms) tentando conectar antes do erro
+        idle: 10000                  // Tempo antes de liberar conexão ociosa
       },
       logging: false
     })
-  // SQLITE (desenvolvimento local — comentar quando não precisar mais):
+  // Fallback para SQLite para evitar que o app quebre se a URL sumir
   : new Sequelize({
-      // dialect: 'sqlite',                              // SQLite: banco em arquivo local
-      // storage: './src/database/restaurante.sqlite',  // SQLite: caminho do arquivo .sqlite
       dialect: 'sqlite',
       storage: './src/database/restaurante.sqlite',
-      logging: false
+      logging: true                  // Habilita logs SQL em desenvolvimento
     })
-
+    
 // Testa a conexão com o banco de dados
 const conexaoBD = async () => {
     try {
@@ -35,19 +38,15 @@ const conexaoBD = async () => {
         console.error('Erro ao conectar ao banco de dados: ', error)
     }
 }
-// Chama a função de conexão para garantir que o banco esteja acessível
-conexaoBD()
 
 // Exporta a função de sincronização do banco de dados para ser usada em outros arquivos
 export const sincronizarBD = async () => {
     try {
-        await sequelize.sync({ force: false }) // Use force: true para recriar as tabelas (cuidado com dados existentes)
+        await sequelize.sync({ alter: true }) // 'alter' ajusta a tabela sem apagar os dados
         console.log('Banco de dados sincronizado com sucesso!')
     } catch (error) {
         console.error('Erro ao sincronizar o banco de dados: ', error)
     }
 }
-// Chama a função de sincronização para garantir que as tabelas estejam criadas
-sincronizarBD()
 
 export default sequelize
