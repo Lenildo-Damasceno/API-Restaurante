@@ -8,6 +8,10 @@ import User from '../models/modelUSER.js'
 import session from 'express-session'
 import { apagarCache } from '../middlewares/authUser.js'
 import SequelizeStore from 'connect-session-sequelize'
+import 'dotenv/config'
+import { autenticar } from '../middlewares/authUser.js'
+import { validarPerfil } from '../middlewares/authUser.js'
+import cookieParser from 'cookie-parser'
 
 // Inicializa o armazenamento de sessão baseado no Sequelize
 const SessionStore = SequelizeStore(session.Store)
@@ -31,6 +35,7 @@ app.locals.statusBanco = {
   conectado: false,
   ultimaMensagem: 'Conectando ao banco de dados...'
 }
+app.use(cookieParser()) // Habilita o middleware de cookies para ler os tokens de autenticação
 app.use(apagarCache)
 app.use(morgan('dev'))
 app.use(express.json())
@@ -89,7 +94,7 @@ export function exigirBancoConectado(req, res, next) {
 
 // Middleware para proteger rotas exclusivas de admin
 export function exigirAdmin(req, res, next) {
-  if (req.session.userId && req.session.userId.perfil === 'admin') {
+  if (req.user && req.user.perfil === 'admin') {
     return next()
   }
   console.warn('Acesso negado: Usuário não é administrador.')

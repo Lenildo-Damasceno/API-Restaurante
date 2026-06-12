@@ -1,9 +1,5 @@
 import Sequelize from 'sequelize'
 
-
-
-
-
 const isProd = process.env.NODE_ENV === 'production'
 
 // Usa Neon em produção, SQLite em desenvolvimento

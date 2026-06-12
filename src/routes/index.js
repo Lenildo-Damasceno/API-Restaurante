@@ -17,7 +17,7 @@ const router = Router();
 router.get('/', mostrarInicio);
 router.use('/painel', autenticar, pagesRoutes);
 router.use('/clientes', autenticar, exigirBancoConectado, clientesRoutes);
-router.use('/pratos', autenticar, exigirBancoConectado, pratosRoutes);
+router.use('/pratos', autenticar, exigirBancoConectado,validarPerfil(['administrador', 'gerente']), pratosRoutes);
 router.use('/pedidos', autenticar, exigirBancoConectado, pedidosRoutes);
 router.use('/itens-pedido', autenticar, exigirBancoConectado, itensPedidoRoutes);
 router.get('/User/cadastroUsuario', cadastrarUsuario);

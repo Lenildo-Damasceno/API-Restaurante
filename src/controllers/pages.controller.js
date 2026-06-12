@@ -39,7 +39,7 @@ function montarViewBase(req, pageTitle, currentPath) {
     navegacao: montarNavegacao(),
     statusBanco: req.app.locals.statusBanco,
     feedback: lerFeedback(req),
-    usuario: req.session.userId // Passa os dados do usuário logado para o EJS
+    usuario: req.user // Passa os dados do usuário vindo do JWT para o EJS
   };
 }
 
@@ -208,7 +208,7 @@ export async function mostrarDashboard(req, res, next) {
         pedidos: pedidos.length,
         itensPedido: itensPedido.length
       },
-      usuario: req.session.userId,
+      usuario: req.user,
       pedidosRecentes: pedidos.slice(0, 5),
       pratosDestaque: pratos.slice(0, 5)
     });
