@@ -2,10 +2,28 @@
 import 'dotenv/config' 
 import app from './src/config/app.js'
 import { sincronizarBD } from './src/config/orm.js'
-
+import User from './src/models/modelUSER.js'
+import bcrypt from 'bcrypt'
 
 console.log('Iniciando sincronização das tabelas...')
 await sincronizarBD()
+
+try {
+    const totalUsers = await User.count()
+    if (totalUsers === 0) {
+        console.log('Nenhum usuário encontrado. Criando administrador padrão...')
+        const senhaCriptografada = await bcrypt.hash('admin123', 10)
+        await User.create({
+            nome: 'Admin Padrão',
+            email: 'admin@admin.com',
+            password: senhaCriptografada,
+            perfil: 'administrador'
+        })
+        console.log('Administrador padrão criado com sucesso! E-mail: admin@admin.com | Senha: admin123')
+    }
+} catch (error) {
+    console.error('Erro ao verificar ou criar o usuário padrão:', error)
+}
 
 
 try {
