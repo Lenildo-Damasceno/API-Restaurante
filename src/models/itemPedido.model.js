@@ -26,6 +26,8 @@ const ItemPedido = sequelize.define('ItemPedido', {
   timestamps: false
 })
 
+
+
 export default ItemPedido
   if (!linha) {
     return null;
@@ -52,15 +54,10 @@ export default ItemPedido
         }
       : null
   };
-}
 
-/**
- * Reúne as operações SQL relacionadas aos itens do pedido.
- */
+
+
 const ItemPedido = {
-  /**
-   * Lista todos os itens do pedido com os dados básicos de pedido e prato.
-   */
   async listarTodos() {
     const pool = obterPool();
     const linhas = await pool.query(sql`
@@ -83,9 +80,7 @@ const ItemPedido = {
     return linhas.map(mapearItemPedido);
   },
 
-  /**
-   * Busca um único item do pedido pelo ID.
-   */
+ 
   async buscarPorId(id) {
     const pool = obterPool();
     const linha = await pool.row(sql`
@@ -108,9 +103,7 @@ const ItemPedido = {
     return mapearItemPedido(linha);
   },
 
-  /**
-   * Cria um item do pedido e devolve o resultado final já com relacionamentos.
-   */
+
   async criar(dadosItemPedido) {
     const pool = obterPool();
 
@@ -119,9 +112,7 @@ const ItemPedido = {
     return this.buscarPorId(dadosItemPedido.id);
   },
 
-  /**
-   * Atualiza um item do pedido.
-   */
+ 
   async atualizar(id, dadosItemPedido) {
     const pool = obterPool();
 
@@ -134,9 +125,7 @@ const ItemPedido = {
     return this.buscarPorId(id);
   },
 
-  /**
-   * Remove um item do pedido.
-   */
+ 
   async remover(id) {
     const pool = obterPool();
 
@@ -145,10 +134,6 @@ const ItemPedido = {
       where id = ${id}
     `);
   },
-
-  /**
-   * Remove todos os itens de um pedido específico.
-   */
   async removerPorPedido(idPedido) {
     const pool = obterPool();
 
@@ -158,9 +143,10 @@ const ItemPedido = {
     `);
   },
 
-  /**
-   * Conta quantos itens usam um determinado prato.
-   */
+ 
+
+
+
   async contarPorPrato(idPrato) {
     const pool = obterPool();
 

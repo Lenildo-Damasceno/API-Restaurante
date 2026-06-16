@@ -1,10 +1,7 @@
 import { ItemPedido, Prato } from '../models/index.js';
 import { randomUUID } from 'node:crypto';
 
-/**
- * Organiza e valida os dados completos do prato.
- * Esse helper e usado no PUT e no POST.
- */
+
 function extrairDadosPrato(body) {
   const nome = body.nome?.trim();
   const categoria = body.categoria?.trim() || null;
@@ -25,10 +22,7 @@ function extrairDadosPrato(body) {
   return { nome, categoria, preco };
 }
 
-/**
- * Organiza e valida os dados parciais do prato.
- * Esse helper e usado no PATCH.
- */
+
 function extrairDadosPratoParcial(body) {
   const dadosPrato = {};
 
@@ -69,10 +63,7 @@ function extrairDadosPratoParcial(body) {
   return dadosPrato;
 }
 
-/**
- * Metodo GET
- * Retorna todos os pratos cadastrados.
- */
+
 export async function listarPratos(req, res) {
   try {
     const pratos = await Prato.findAll()
@@ -85,10 +76,7 @@ export async function listarPratos(req, res) {
   }
 }
 
-/**
- * Metodo GET
- * Retorna um prato especifico com base no ID recebido.
- */
+
 export async function buscarPratoPorId(req, res) {
   try {
     const prato = await Prato.findByPk(req.params.id)
@@ -105,10 +93,7 @@ export async function buscarPratoPorId(req, res) {
   }
 }
 
-/**
- * Metodo POST
- * Cria um prato novo na tabela de pratos.
- */
+
 export async function criarPrato(req, res) {
   try {
     const dadosPrato = extrairDadosPrato(req.body)
@@ -128,10 +113,7 @@ export async function criarPrato(req, res) {
   }
 }
 
-/**
- * Metodo PUT
- * Atualiza todos os dados de um prato existente.
- */
+
 export async function atualizarPrato(req, res) {
   try {
     const prato = await Prato.findByPk(req.params.id)
@@ -154,10 +136,7 @@ export async function atualizarPrato(req, res) {
   }
 }
 
-/**
- * Metodo PATCH
- * Atualiza apenas parte dos dados de um prato.
- */
+
 export async function atualizarPratoParcial(req, res) {
   try {
     const prato = await Prato.findByPk(req.params.id)
@@ -180,10 +159,7 @@ export async function atualizarPratoParcial(req, res) {
   }
 }
 
-/**
- * Metodo DELETE
- * Remove um prato somente se ele ainda nao estiver sendo usado em itens de pedido.
- */
+
 export async function removerPrato(req, res) {
   try {
     const prato = await Prato.findByPk(req.params.id)

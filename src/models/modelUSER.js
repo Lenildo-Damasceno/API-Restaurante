@@ -22,7 +22,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(100),
         allowNull: false
     },
-    perfil: { // 'admin' ou 'cliente'
+    perfil: { 
         type: DataTypes.STRING(100),
         allowNull: false,
         charset: 'utf8',
@@ -31,8 +31,8 @@ const User = sequelize.define('User', {
 }, 
 
 {
-    tableName: 'users', // nome da tabela no banco de dados
-    timestamps: false, // desativa os campos createdAt e updatedAt
+    tableName: 'users', 
+    timestamps: false, 
     charset: 'utf8',
     collate: 'utf8_general_ci'
 })

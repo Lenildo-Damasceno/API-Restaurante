@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { mostrarInicio } from '../controllers/home.controller.js';
 import { autenticar, validarPerfil } from '../middlewares/authUser.js';
 import pagesRoutes from './pages.routes.js';
 import clientesRoutes from './clientes.routes.js';
@@ -13,15 +12,12 @@ import { telaRecuperarSenha, recuperarSenha, telaNovaSenha, salvarNovaSenha } fr
 
 const router = Router();
 
-router.get('/', mostrarInicio);
 router.use('/painel', autenticar, pagesRoutes);
 router.use('/clientes', autenticar, clientesRoutes);
 router.use('/pratos', autenticar, validarPerfil(['administrador', 'gerente']), pratosRoutes);
 router.use('/pedidos', autenticar, pedidosRoutes);
 router.use('/itens-pedido', autenticar, itensPedidoRoutes);
-router.get('/User/cadastroUsuario', cadastrarUsuario);
-router.post('/User', criarUsuario);
-router.use('/User', autenticar, validarPerfil(['admin']), routeUser);
+router.use('/User', autenticar, validarPerfil(['administrador', 'gerente']), routeUser);
 router.get('/login/recuperar-senha', telaRecuperarSenha);
 router.post('/login/recuperar-senha', recuperarSenha);
 router.get('/login/nova-senha', telaNovaSenha);

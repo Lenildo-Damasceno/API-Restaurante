@@ -1,9 +1,7 @@
 import { Cliente, ItemPedido, Pedido, Prato } from '../models/index.js';
 import { randomUUID } from 'node:crypto';
 
-/**
- * Monta o menu principal usado nas paginas EJS.
- */
+
 function montarNavegacao() {
   return [
     { label: 'Dashboard', href: '/painel' },
@@ -14,9 +12,7 @@ function montarNavegacao() {
   ];
 }
 
-/**
- * Le uma mensagem simples da query string para mostrar feedback na tela.
- */
+
 function lerFeedback(req) {
   if (req.query.success) {
     return { tipo: 'success', mensagem: req.query.success };
@@ -29,9 +25,7 @@ function lerFeedback(req) {
   return null;
 }
 
-/**
- * Cria um conjunto de dados comuns para todas as views do painel.
- */
+
 function montarViewBase(req, pageTitle, currentPath) {
   return {
     pageTitle,
@@ -43,23 +37,17 @@ function montarViewBase(req, pageTitle, currentPath) {
   };
 }
 
-/**
- * Redireciona a pagina com uma mensagem de sucesso.
- */
+
 function redirecionarComSucesso(res, caminho, mensagem) {
   return res.redirect(`${caminho}?success=${encodeURIComponent(mensagem)}`);
 }
 
-/**
- * Redireciona a pagina com uma mensagem de erro.
- */
+
 function redirecionarComErro(res, caminho, mensagem) {
   return res.redirect(`${caminho}?error=${encodeURIComponent(mensagem)}`);
 }
 
-/**
- * Valida os dados do cliente enviados pelo formulario HTML.
- */
+
 function extrairDadosCliente(body) {
   const nome = body.nome?.trim();
   const telefone = body.telefone?.trim() || null;
@@ -73,9 +61,7 @@ function extrairDadosCliente(body) {
   return { nome, telefone };
 }
 
-/**
- * Valida os dados do prato enviados pelo formulario HTML.
- */
+
 function extrairDadosPrato(body) {
   const nome = body.nome?.trim();
   const categoria = body.categoria?.trim() || null;
@@ -96,9 +82,7 @@ function extrairDadosPrato(body) {
   return { nome, categoria, preco };
 }
 
-/**
- * Valida o cliente opcional vinculado ao pedido.
- */
+
 async function validarClienteDoPedido(idCliente) {
   if (!idCliente) {
     return null
@@ -115,9 +99,7 @@ async function validarClienteDoPedido(idCliente) {
   return idCliente
 }
 
-/**
- * Valida o prato opcional vinculado ao pedido.
- */
+
 async function validarPrato(idPrato) {
   if (!idPrato) {
     return null
@@ -134,9 +116,7 @@ async function validarPrato(idPrato) {
   return idPrato
 }
 
-/**
- * Valida os dados do pedido enviados pelo formulario HTML.
- */
+
 async function extrairDadosPedido(body) {
   const mesa = Number(body.mesa);
   const status = body.status?.trim() || 'aberto';
@@ -155,9 +135,7 @@ async function extrairDadosPedido(body) {
   return { mesa, status, idCliente, idPrato };
 }
 
-/**
- * Garante que o pedido e o prato existem antes de criar o item.
- */
+
 async function extrairDadosItemPedido(body) {
   const quantidade = Number(body.quantidade);
   const idPedido = body.idPedido?.trim();

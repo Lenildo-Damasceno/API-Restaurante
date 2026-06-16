@@ -1,4 +1,4 @@
-<%- include('_header', { pageTitle: 'Clientes', activePage: 'clientes' }) %>
+<%- include('./_header.ejs', { pageTitle: 'Clientes', activePage: 'clientes' }) %>
 
 <% if (feedback) { %>
   <div class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></div>
@@ -46,7 +46,10 @@
               <td><%= cliente.telefone || '—' %></td>
               <td class="actions">
                 <button class="button button--small" data-id="<%= cliente.id %>" data-nome="<%= cliente.nome %>" data-telefone="<%= cliente.telefone || '' %>" onclick="abrirModalEditar(this)">Editar</button>
-                <button class="button button--small button--danger" onclick="deletarCliente('<%= cliente.id %>', '<%= cliente.nome %>')">Deletar</button>
+                <button class="button button--small button--danger" 
+                        data-id="<%= cliente.id %>" 
+                        data-nome="<%= cliente.nome %>" 
+                        onclick="deletarCliente(this.dataset.id, this.dataset.nome)">Deletar</button>
               </td>
             </tr>
           <% }) %>
@@ -83,4 +86,4 @@ function deletarCliente(id, nome) {
 }
 </script>
 
-<%- include('_footer') %>
+<%- include('./_footer.ejs') %>

@@ -1,4 +1,4 @@
-<%- include('_header', { pageTitle: 'Itens do Pedido', activePage: 'itensPedido' }) %>
+<%- include('./_header.ejs', { pageTitle: 'Itens do Pedido', activePage: 'itensPedido' }) %>
 
 <% if (feedback) { %>
   <div class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></div>
@@ -93,4 +93,4 @@ function editarItem(id, quantidade) {
 }
 </script>
 
-<%- include('_footer') %>
+<%- include('./_footer.ejs') %>

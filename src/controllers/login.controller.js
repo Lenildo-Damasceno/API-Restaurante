@@ -29,19 +29,7 @@ if (!senhaValida) {
     return res.redirect('/login?erro=Senha invalida')
 }
 
-// req.session.regenerate((err) => {
-//     if (err) {
-//         console.error('Erro ao regenerar sessao:', err)
-//         return res.status(500).json({ message: 'Erro ao criar sessao.' })
-//     }
-//     req.session.userId = {
-//         id: usuario.idUser,
-//         nome: usuario.nome,
-//         email: usuario.email,
-//         perfil: usuario.perfil
-//     }
-//     return res.redirect('/painel')
-// })
+
 const token = jwt.sign(
     {
     id: usuario.idUser,
@@ -62,7 +50,7 @@ res.cookie('auth_token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'Strict', //
-    maxAge: 1000 * 60 * 60 * 6 // 6 horas
+    maxAge: 1000 * 60 * 60 * 6 
 })
 res.redirect('/painel')
 
@@ -76,16 +64,8 @@ res.redirect('/painel')
 
 
 
-// Esta funcao pode ser expandida para invalidar tokens de autenticacao ou limpar caches relacionados ao usuario
+
 export const logout = (req, res) => {
-    // req.session.destroy((err) => {
-    //     if (err) {
-    //         console.error('Erro ao destruir sessao:', err)
-    //         return res.status(500).json({ message: 'Erro ao fazer logout.' })
-    //     }
-    //     res.clearCookie('connect.sid') // Limpa o cookie de sessao
-    //     return res.redirect('/login')
-    // })
     res.clearCookie('auth_token',{
         httpOnly: true,
         secure: true,
@@ -96,14 +76,14 @@ export const logout = (req, res) => {
     return res.redirect('/login')
 }
 
-//  Esta funcao pode ser expandida para enviar um email de recuperacao de senha ou gerar um token de redefinicao
+
 export const telaRecuperarSenha = (req, res) => {
   return res.sendFile(path.resolve('./public/html/recuperar_senha.html'))
 }
 
 
 
-// Esta funcao pode ser expandida para enviar um email de recuperacao de senha ou gerar um token de redefinicao
+
 export const recuperarSenha = async (req, res) => {
   const { email } = req.body
 
@@ -122,14 +102,14 @@ export const recuperarSenha = async (req, res) => {
 
 
 
-// Esta funcao pode ser expandida para validar um token de redefinicao de senha
+
 export const telaNovaSenha = (req, res) => {
   return res.sendFile(path.resolve('./public/html/nova_senha.html'))
 }
 
 
 
-// Esta funcao pode ser expandida para validar um token de redefinicao de senha
+
 export const salvarNovaSenha = async (req, res) => {
   const { email, password } = req.body
 

@@ -7,14 +7,15 @@ import {
   listarClientes,
   removerCliente
 } from '../controllers/cliente.controller.js';
+import { validarPerfil } from '../middlewares/authUser.js';
 
 const router = Router();
 
 router.get('/', listarClientes);
 router.get('/:id', buscarClientePorId);
 router.post('/', criarCliente);
-router.put('/:id', atualizarCliente);
-router.patch('/:id', atualizarClienteParcial);
-router.delete('/:id', removerCliente);
+router.put('/:id', validarPerfil(['administrador', 'gerente']), atualizarCliente);
+router.patch('/:id', validarPerfil(['administrador', 'gerente']), atualizarClienteParcial);
+router.delete('/:id', validarPerfil(['administrador', 'gerente']), removerCliente);
 
 export default router;

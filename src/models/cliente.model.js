@@ -3,13 +3,9 @@ import sequelize from '../config/orm.js';
 
 const { DataTypes } = Sequelize;
 
-/**
- * Reúne as consultas SQL ligadas à entidade cliente.
- */
+
 const Cliente = {
-  /**
-   * Retorna todos os clientes ordenados por nome.
-   */
+  
   async listarTodos() {
     const pool = obterPool();
 
@@ -20,9 +16,7 @@ const Cliente = {
     `);
   },
 
-  /**
-   * Busca um cliente específico pelo identificador.
-   */
+  
   async buscarPorId(id) {
     const pool = obterPool();
 
@@ -33,9 +27,6 @@ const Cliente = {
     `);
   },
 
-  /**
-   * Insere um novo cliente e devolve o registro salvo.
-   */
   async criar(dadosCliente) {
     const pool = obterPool();
 
@@ -44,9 +35,7 @@ const Cliente = {
     return this.buscarPorId(dadosCliente.id);
   },
 
-  /**
-   * Atualiza os dados de um cliente existente e devolve o valor final.
-   */
+  
   async atualizar(id, dadosCliente) {
     const pool = obterPool();
 
@@ -59,9 +48,7 @@ const Cliente = {
     return this.buscarPorId(id);
   },
 
-  /**
-   * Remove um cliente do banco com base no ID.
-   */
+ 
   async remover(id) {
     const pool = obterPool();
 
@@ -71,9 +58,7 @@ const Cliente = {
     `);
   },
 
-  /**
-   * Conta quantos pedidos ainda estão associados a esse cliente.
-   */
+  
   async contarPedidosVinculados(idCliente) {
     const pool = obterPool();
 

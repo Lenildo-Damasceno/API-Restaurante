@@ -19,6 +19,8 @@ export const autenticar = async (req,res,next) => {
         
 }
 
+
+
 export const validarPerfil = (perfisPermitidos) => {
     return (req, res, next) => {
         const perfilUsuario = req.user?.perfil
@@ -39,7 +41,6 @@ export const apagarCache = (req, res, next) => {
 }
 
 export const exigirBancoConectado = (req, res, next) => {
-    // Ignora login e arquivos estáticos (que possuem extensão com ponto)
     if (req.path.startsWith('/login') || req.path.includes('.')) {
         return next()
     }

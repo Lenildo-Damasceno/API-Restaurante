@@ -42,9 +42,7 @@ export default Pedido
   };
 
 
-/**
- * Monta a estrutura final de um pedido a partir da linha base.
- */
+
 function criarPedidoBase(linha) {
   return {
     id: linha.id,
@@ -62,13 +60,8 @@ function criarPedidoBase(linha) {
   };
 }
 
-/**
- * Reúne as operações SQL dos pedidos.
- */
+
 const Pedido = {
-  /**
-   * Lista todos os pedidos com cliente e itens associados.
-   */
   async listarTodos() {
     const pool = obterPool();
     const linhas = await pool.query(sql`
@@ -107,9 +100,8 @@ const Pedido = {
     return Array.from(mapaPedidos.values());
   },
 
-  /**
-   * Busca um único pedido pelo ID, com cliente e itens.
-   */
+
+
   async buscarPorId(id) {
     const pool = obterPool();
     const linhas = await pool.query(sql`
@@ -149,9 +141,7 @@ const Pedido = {
     return pedido;
   },
 
-  /**
-   * Cria um pedido novo.
-   */
+  
   async criar(dadosPedido) {
     const pool = obterPool();
 
@@ -160,9 +150,7 @@ const Pedido = {
     return this.buscarPorId(dadosPedido.id);
   },
 
-  /**
-   * Atualiza um pedido já existente.
-   */
+  
   async atualizar(id, dadosPedido) {
     const pool = obterPool();
 
@@ -175,9 +163,7 @@ const Pedido = {
     return this.buscarPorId(id);
   },
 
-  /**
-   * Remove um pedido pelo identificador.
-   */
+ 
   async remover(id) {
     const pool = obterPool();
 

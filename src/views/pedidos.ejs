@@ -1,4 +1,4 @@
-<%- include('_header', { pageTitle: 'Pedidos', activePage: 'pedidos' }) %>
+<%- include('./_header.ejs', { pageTitle: 'Pedidos', activePage: 'pedidos' }) %>
 
 <% if (feedback) { %>
   <div class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></div>
@@ -69,7 +69,11 @@
           </ul>
         <% } %>
         <div class="actions">
-          <button class="button button--small" onclick="editarPedido('<%= pedido.id %>', '<%= pedido.mesa %>', '<%= pedido.status || '' %>')">Editar</button>
+          <button class="button button--small" 
+                  data-id="<%= pedido.id %>" 
+                  data-mesa="<%= pedido.mesa %>" 
+                  data-status="<%= pedido.status || '' %>" 
+                  onclick="editarPedido(this.dataset.id, this.dataset.mesa, this.dataset.status)">Editar</button>
           <button class="button button--small button--danger" onclick="confirmarDelecao('/pedidos/<%= pedido.id %>', 'pedido')">Deletar</button>
         </div>
       </article>
@@ -99,4 +103,4 @@ function editarPedido(id, mesa, status) {
 }
 </script>
 
-<%- include('_footer') %>
+<%- include('./_footer.ejs') %>

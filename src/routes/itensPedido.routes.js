@@ -7,14 +7,15 @@ import {
   listarItensPedido,
   removerItemPedido
 } from '../controllers/itemPedido.controller.js';
+import { validarPerfil } from '../middlewares/authUser.js';
 
 const router = Router();
 
 router.get('/', listarItensPedido);
 router.get('/:id', buscarItemPedidoPorId);
 router.post('/', criarItemPedido);
-router.put('/:id', atualizarItemPedido);
-router.patch('/:id', atualizarItemPedidoParcial);
-router.delete('/:id', removerItemPedido);
+router.put('/:id', validarPerfil(['administrador', 'gerente']), atualizarItemPedido);
+router.patch('/:id', validarPerfil(['administrador', 'gerente']), atualizarItemPedidoParcial);
+router.delete('/:id', validarPerfil(['administrador', 'gerente']), removerItemPedido);
 
 export default router;

@@ -1,10 +1,7 @@
 import { Cliente, Pedido } from '../models/index.js';
 import { randomUUID } from 'node:crypto';
 
-/**
- * Organiza e valida os dados completos do cliente.
- * Esse helper e usado por PUT, porque no PUT normalmente enviamos o objeto inteiro.
- */
+
 function extrairDadosCliente(body) {
   const nome = body.nome?.trim();
   const telefone = body.telefone?.trim() || null;
@@ -18,10 +15,7 @@ function extrairDadosCliente(body) {
   return { nome, telefone };
 }
 
-/**
- * Organiza e valida apenas os campos enviados parcialmente.
- * Esse helper e usado por PATCH, porque no PATCH podemos alterar so um campo.
- */
+
 function extrairDadosClienteParcial(body) {
   const dadosCliente = {};
 
@@ -50,10 +44,8 @@ function extrairDadosClienteParcial(body) {
   return dadosCliente;
 }
 
-/**
- * Metodo GET
- * Lista todos os clientes cadastrados no banco.
- */
+
+
 export async function listarClientes(req, res) {
   try {
     const clientes = await Cliente.findAll()
@@ -66,10 +58,8 @@ export async function listarClientes(req, res) {
   }
 }
 
-/**
- * Metodo GET
- * Busca apenas um cliente pelo ID informado na URL.
- */
+
+
 export async function buscarClientePorId(req, res) {
   try {
     const cliente = await Cliente.findByPk(req.params.id)
@@ -86,10 +76,7 @@ export async function buscarClientePorId(req, res) {
   }
 }
 
-/**
- * Metodo POST
- * Cria um novo cliente usando os dados enviados no corpo da requisicao.
- */
+
 export async function criarCliente(req, res) {
   try {
     const dadosCliente = extrairDadosCliente(req.body)
@@ -109,11 +96,8 @@ export async function criarCliente(req, res) {
   }
 }
 
-/**
- * Metodo PUT
- * Atualiza todos os dados de um cliente existente.
- * No PUT o ideal e mandar o objeto completo.
- */
+
+
 export async function atualizarCliente(req, res) {
   try {
     const cliente = await Cliente.findByPk(req.params.id) // metodo get para buscar o cliente pelo ID
@@ -136,11 +120,7 @@ export async function atualizarCliente(req, res) {
   }
 }
 
-/**
- * Metodo PATCH
- * Atualiza apenas parte dos dados do cliente.
- * Exemplo: alterar so o telefone sem reenviar nome.
- */
+
 export async function atualizarClienteParcial(req, res) {
   try {
     const cliente = await Cliente.findByPk(req.params.id)
@@ -163,10 +143,6 @@ export async function atualizarClienteParcial(req, res) {
   }
 }
 
-/**
- * Metodo DELETE
- * Remove um cliente, mas antes verifica se ele ja possui pedidos vinculados.
- */
 export async function removerCliente(req, res) {
   try {
     const cliente = await Cliente.findByPk(req.params.id)

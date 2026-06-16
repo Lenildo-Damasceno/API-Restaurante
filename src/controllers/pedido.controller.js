@@ -1,9 +1,8 @@
 import { Cliente, ItemPedido, Pedido, Prato } from '../models/index.js';
 import { randomUUID } from 'node:crypto';
 
-/**
- * Valida se o cliente informado existe antes de salvar o pedido.
- */
+
+
 async function validarClienteDoPedido(idCliente) {
   if (!idCliente) {
     return null
@@ -20,9 +19,7 @@ async function validarClienteDoPedido(idCliente) {
   return idCliente
 }
 
-/**
- * Valida se o prato informado existe.
- */
+
 async function validarPrato(idPrato) {
   if (!idPrato) {
     return null
@@ -39,10 +36,7 @@ async function validarPrato(idPrato) {
   return idPrato
 }
 
-/**
- * Organiza e valida os dados completos do pedido.
- * Esse helper e usado no POST e no PUT.
- */
+
 async function extrairDadosPedido(body) {
   const mesa = Number(body.mesa);
   const status = body.status?.trim() || 'aberto';
@@ -61,10 +55,7 @@ async function extrairDadosPedido(body) {
   return { mesa, status, idCliente, idPrato };
 }
 
-/**
- * Organiza e valida os dados parciais do pedido.
- * Esse helper e usado no PATCH.
- */
+
 async function extrairDadosPedidoParcial(body) {
   const dadosPedido = {};
 
@@ -99,10 +90,7 @@ async function extrairDadosPedidoParcial(body) {
   return dadosPedido;
 }
 
-/**
- * Metodo GET
- * Lista todos os pedidos com cliente e itens do pedido.
- */
+
 export async function listarPedidos(req, res) {
   try {
     const pedidos = await Pedido.findAll()
@@ -115,10 +103,7 @@ export async function listarPedidos(req, res) {
   }
 }
 
-/**
- * Metodo GET
- * Busca um pedido especifico com seus relacionamentos.
- */
+
 export async function buscarPedidoPorId(req, res) {
   try {
     const pedido = await Pedido.findByPk(req.params.id)
@@ -135,11 +120,8 @@ export async function buscarPedidoPorId(req, res) {
   }
 }
 
-/**
- * Metodo POST
- * Cria um novo pedido com mesa, status e cliente opcional.
- * Se idPrato for fornecido, cria automaticamente um item com quantidade 1.
- */
+
+
 export async function criarPedido(req, res) {
   try {
     const dadosPedido = await extrairDadosPedido(req.body)
@@ -170,10 +152,7 @@ export async function criarPedido(req, res) {
   }
 }
 
-/**
- * Metodo PUT
- * Atualiza todos os dados de um pedido existente.
- */
+
 export async function atualizarPedido(req, res) {
   try {
     const pedido = await Pedido.findByPk(req.params.id)
@@ -196,10 +175,7 @@ export async function atualizarPedido(req, res) {
   }
 }
 
-/**
- * Metodo PATCH
- * Atualiza apenas parte dos dados de um pedido.
- */
+
 export async function atualizarPedidoParcial(req, res) {
   try {
     const pedido = await Pedido.findByPk(req.params.id)
@@ -222,10 +198,7 @@ export async function atualizarPedidoParcial(req, res) {
   }
 }
 
-/**
- * Metodo DELETE
- * Remove um pedido e tambem apaga seus itens para evitar vinculo orfao.
- */
+
 export async function removerPedido(req, res) {
   try {
     const pedido = await Pedido.findByPk(req.params.id)

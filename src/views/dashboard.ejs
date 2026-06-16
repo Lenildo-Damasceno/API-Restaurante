@@ -1,4 +1,4 @@
-<%- include('_header', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
+<%- include('./_header.ejs', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
 
 <% if (usuario && usuario.perfil === 'admin') { %>
   <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
@@ -73,4 +73,4 @@
   </article>
 </section>
 
-<%- include('_footer') %>
+<%- include('./_footer.ejs') %>

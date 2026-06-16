@@ -1,4 +1,4 @@
-<%- include('_header', { pageTitle: 'Cardápio', activePage: 'pratos' }) %>
+<%- include('./_header.ejs', { pageTitle: 'Cardápio', activePage: 'pratos' }) %>
 
 <% if (feedback) { %>
   <div class="feedback feedback--<%= feedback.tipo %>"><%= feedback.mensagem %></div>
@@ -40,7 +40,12 @@
         <h3><%= prato.nome %></h3>
         <p class="menu-card__price">R$ <%= Number(prato.preco).toFixed(2) %></p>
         <div class="actions">
-          <button class="button button--small" onclick="editarPrato('<%= prato.id %>', '<%= prato.nome %>', '<%= prato.categoria || '' %>', '<%= prato.preco %>')">Editar</button>
+          <button class="button button--small" 
+                  data-id="<%= prato.id %>" 
+                  data-nome="<%= prato.nome %>" 
+                  data-categoria="<%= prato.categoria || '' %>" 
+                  data-preco="<%= prato.preco %>" 
+                  onclick="editarPrato(this.dataset.id, this.dataset.nome, this.dataset.categoria, this.dataset.preco)">Editar</button>
           <button class="button button--small button--danger" onclick="confirmarDelecao('/pratos/<%= prato.id %>', 'prato')">Deletar</button>
         </div>
       </article>
@@ -71,4 +76,4 @@ function editarPrato(id, nome, categoria, preco) {
 }
 </script>
 
-<%- include('_footer') %>
+<%- include('./_footer.ejs') %>
