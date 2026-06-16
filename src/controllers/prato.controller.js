@@ -1,10 +1,5 @@
 import { ItemPedido, Prato } from '../models/index.js';
-import {
-  criarErroHttp,
-  criarId,
-  responderErro,
-  responderNaoEncontrado
-} from './controller.helpers.js';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Organiza e valida os dados completos do prato.
@@ -16,11 +11,15 @@ function extrairDadosPrato(body) {
   const preco = Number(body.preco);
 
   if (!nome) {
-    throw criarErroHttp('O campo nome e obrigatorio.');
+    const erro = new Error('O campo nome e obrigatorio.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (Number.isNaN(preco) || preco < 0) {
-    throw criarErroHttp('O campo preco deve ser um numero maior ou igual a zero.');
+    const erro = new Error('O campo preco deve ser um numero maior ou igual a zero.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return { nome, categoria, preco };
@@ -37,7 +36,9 @@ function extrairDadosPratoParcial(body) {
     const nome = body.nome?.trim();
 
     if (!nome) {
-      throw criarErroHttp('O campo nome nao pode ficar vazio.');
+      const erro = new Error('O campo nome nao pode ficar vazio.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     dadosPrato.nome = nome;
@@ -51,14 +52,18 @@ function extrairDadosPratoParcial(body) {
     const preco = Number(body.preco);
 
     if (Number.isNaN(preco) || preco < 0) {
-      throw criarErroHttp('O campo preco deve ser um numero maior ou igual a zero.');
+      const erro = new Error('O campo preco deve ser um numero maior ou igual a zero.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     dadosPrato.preco = preco;
   }
 
   if (Object.keys(dadosPrato).length === 0) {
-    throw criarErroHttp('Envie pelo menos um campo para atualizar no PATCH.');
+    const erro = new Error('Envie pelo menos um campo para atualizar no PATCH.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return dadosPrato;
@@ -74,7 +79,9 @@ export async function listarPratos(req, res) {
 
     return res.json(pratos)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -87,12 +94,14 @@ export async function buscarPratoPorId(req, res) {
     const prato = await Prato.findByPk(req.params.id)
 
     if (!prato) {
-      return responderNaoEncontrado(res, 'Prato')
+      return res.status(404).json({ message: 'Prato não encontrado.' });
     }
 
     return res.json(prato)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -104,7 +113,7 @@ export async function criarPrato(req, res) {
   try {
     const dadosPrato = extrairDadosPrato(req.body)
     const prato = await Prato.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosPrato
     })
 
@@ -113,7 +122,9 @@ export async function criarPrato(req, res) {
       data: prato
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -126,7 +137,7 @@ export async function atualizarPrato(req, res) {
     const prato = await Prato.findByPk(req.params.id)
 
     if (!prato) {
-      return responderNaoEncontrado(res, 'Prato')
+      return res.status(404).json({ message: 'Prato não encontrado.' });
     }
 
     const dadosPrato = extrairDadosPrato(req.body)
@@ -137,7 +148,9 @@ export async function atualizarPrato(req, res) {
       data: prato
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -150,7 +163,7 @@ export async function atualizarPratoParcial(req, res) {
     const prato = await Prato.findByPk(req.params.id)
 
     if (!prato) {
-      return responderNaoEncontrado(res, 'Prato')
+      return res.status(404).json({ message: 'Prato não encontrado.' });
     }
 
     const dadosPrato = extrairDadosPratoParcial(req.body)
@@ -161,7 +174,9 @@ export async function atualizarPratoParcial(req, res) {
       data: prato
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -174,16 +189,15 @@ export async function removerPrato(req, res) {
     const prato = await Prato.findByPk(req.params.id)
 
     if (!prato) {
-      return responderNaoEncontrado(res, 'Prato')
+      return res.status(404).json({ message: 'Prato não encontrado.' });
     }
 
     const quantidadeItens = await ItemPedido.count({ where: { idPrato: req.params.id } })
 
     if (quantidadeItens > 0) {
-      throw criarErroHttp(
-        'Este prato esta vinculado a itens de pedido e nao pode ser removido.',
-        409
-      )
+      return res.status(409).json({
+        message: 'Este prato esta vinculado a itens de pedido e nao pode ser removido.'
+      });
     }
 
     await prato.destroy()
@@ -192,6 +206,8 @@ export async function removerPrato(req, res) {
       message: 'Prato removido com sucesso.'
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }

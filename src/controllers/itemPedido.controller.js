@@ -1,10 +1,5 @@
 import { ItemPedido, Pedido, Prato } from '../models/index.js';
-import {
-  criarErroHttp,
-  criarId,
-  responderErro,
-  responderNaoEncontrado
-} from './controller.helpers.js';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Garante que o pedido informado existe antes de criar ou atualizar um item.
@@ -13,7 +8,9 @@ async function validarPedido(idPedido) {
   const pedido = await Pedido.findByPk(idPedido)
 
   if (!pedido) {
-    throw criarErroHttp('O pedido informado nao existe.')
+    const erro = new Error('O pedido informado nao existe.');
+    erro.statusCode = 404;
+    throw erro;
   }
 }
 
@@ -21,7 +18,9 @@ async function validarPrato(idPrato) {
   const prato = await Prato.findByPk(idPrato)
 
   if (!prato) {
-    throw criarErroHttp('O prato informado nao existe.')
+    const erro = new Error('O prato informado nao existe.');
+    erro.statusCode = 404;
+    throw erro;
   }
 }
 
@@ -35,15 +34,21 @@ async function extrairDadosItemPedido(body) {
   const idPrato = body.idPrato?.trim();
 
   if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    throw criarErroHttp('O campo quantidade deve ser um numero inteiro maior que zero.');
+    const erro = new Error('O campo quantidade deve ser um numero inteiro maior que zero.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (!idPedido) {
-    throw criarErroHttp('O campo idPedido e obrigatorio.');
+    const erro = new Error('O campo idPedido e obrigatorio.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (!idPrato) {
-    throw criarErroHttp('O campo idPrato e obrigatorio.');
+    const erro = new Error('O campo idPrato e obrigatorio.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   await validarPedido(idPedido);
@@ -63,7 +68,9 @@ async function extrairDadosItemPedidoParcial(body) {
     const quantidade = Number(body.quantidade);
 
     if (!Number.isInteger(quantidade) || quantidade <= 0) {
-      throw criarErroHttp('O campo quantidade deve ser um numero inteiro maior que zero.');
+      const erro = new Error('O campo quantidade deve ser um numero inteiro maior que zero.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     dadosItemPedido.quantidade = quantidade;
@@ -73,7 +80,9 @@ async function extrairDadosItemPedidoParcial(body) {
     const idPedido = body.idPedido?.trim();
 
     if (!idPedido) {
-      throw criarErroHttp('O campo idPedido nao pode ficar vazio.');
+      const erro = new Error('O campo idPedido nao pode ficar vazio.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     await validarPedido(idPedido);
@@ -84,7 +93,9 @@ async function extrairDadosItemPedidoParcial(body) {
     const idPrato = body.idPrato?.trim();
 
     if (!idPrato) {
-      throw criarErroHttp('O campo idPrato nao pode ficar vazio.');
+      const erro = new Error('O campo idPrato nao pode ficar vazio.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     await validarPrato(idPrato);
@@ -92,7 +103,9 @@ async function extrairDadosItemPedidoParcial(body) {
   }
 
   if (Object.keys(dadosItemPedido).length === 0) {
-    throw criarErroHttp('Envie pelo menos um campo para atualizar no PATCH.');
+    const erro = new Error('Envie pelo menos um campo para atualizar no PATCH.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return dadosItemPedido;
@@ -108,7 +121,9 @@ export async function listarItensPedido(req, res) {
 
     return res.json(itensPedido)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -121,12 +136,14 @@ export async function buscarItemPedidoPorId(req, res) {
     const itemPedido = await ItemPedido.findByPk(req.params.id)
 
     if (!itemPedido) {
-      return responderNaoEncontrado(res, 'Item do pedido')
+      return res.status(404).json({ message: 'Item do pedido não encontrado.' });
     }
 
     return res.json(itemPedido)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -138,7 +155,7 @@ export async function criarItemPedido(req, res) {
   try {
     const dadosItemPedido = await extrairDadosItemPedido(req.body)
     const itemPedido = await ItemPedido.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosItemPedido
     })
 
@@ -147,7 +164,9 @@ export async function criarItemPedido(req, res) {
       data: itemPedido
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -160,7 +179,7 @@ export async function atualizarItemPedido(req, res) {
     const itemPedido = await ItemPedido.findByPk(req.params.id)
 
     if (!itemPedido) {
-      return responderNaoEncontrado(res, 'Item do pedido')
+      return res.status(404).json({ message: 'Item do pedido não encontrado.' });
     }
 
     const dadosItemPedido = await extrairDadosItemPedido(req.body)
@@ -171,7 +190,9 @@ export async function atualizarItemPedido(req, res) {
       data: itemPedido
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -184,7 +205,7 @@ export async function atualizarItemPedidoParcial(req, res) {
     const itemPedido = await ItemPedido.findByPk(req.params.id)
 
     if (!itemPedido) {
-      return responderNaoEncontrado(res, 'Item do pedido')
+      return res.status(404).json({ message: 'Item do pedido não encontrado.' });
     }
 
     const dadosItemPedido = await extrairDadosItemPedidoParcial(req.body)
@@ -195,7 +216,9 @@ export async function atualizarItemPedidoParcial(req, res) {
       data: itemPedido
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -208,7 +231,7 @@ export async function removerItemPedido(req, res) {
     const itemPedido = await ItemPedido.findByPk(req.params.id)
 
     if (!itemPedido) {
-      return responderNaoEncontrado(res, 'Item do pedido')
+      return res.status(404).json({ message: 'Item do pedido não encontrado.' });
     }
 
     await itemPedido.destroy()
@@ -217,6 +240,8 @@ export async function removerItemPedido(req, res) {
       message: 'Item do pedido removido com sucesso.'
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }

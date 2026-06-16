@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import User from '../models/modelUSER.js'
 
+
+
 export async function listarUsuarios(req, res) {
     try {
         const usuarios = await User.findAll()
@@ -11,11 +13,14 @@ export async function listarUsuarios(req, res) {
     }
 }
 
+
+
+
 export const criarUsuario = async (req, res) => {
     try {
-        const nome = req.body.nome || req.body.username // Aceita 'nome' (EJS) ou 'username' (HTML)
+        const nome = req.body.nome || req.body.username 
         const email = req.body.email
-        const senha = req.body.senha || req.body.password // Aceita 'senha' ou 'password'
+        const senha = req.body.senha || req.body.password 
         const confirmarSenha = req.body.confirmarSenha || req.body.confirmPassword
         const perfil = req.body.perfil || 'cliente'
 
@@ -30,7 +35,7 @@ export const criarUsuario = async (req, res) => {
         const senhaCriptografada = await bcrypt.hash(senha, 10)
         await User.create({ nome, email, password: senhaCriptografada, perfil })
         
-        // Redireciona para o painel com mensagem de sucesso
+        
         return res.redirect('/painel?success=' + encodeURIComponent('Usuário criado com sucesso!'))
 
     } catch (error) {
@@ -39,12 +44,15 @@ export const criarUsuario = async (req, res) => {
     }
 }
 
+
+
+
 export const cadastrarUsuario = async (req, res) => {
     try {
         return res.render('cadastro-usuario', {
             pageTitle: 'Cadastrar Usuário',
             currentPath: req.originalUrl,
-            usuario: req.session.userId,
+            usuario: req.user,
             statusBanco: req.app.locals.statusBanco,
             feedback: null
         });
@@ -53,6 +61,9 @@ export const cadastrarUsuario = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao abrir pagina de cadastro' })
     }
 }
+
+
+
 
 export const atualizarUsuario = async (req, res) => {
     const id = req.params.id

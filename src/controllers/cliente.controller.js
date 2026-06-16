@@ -1,10 +1,5 @@
 import { Cliente, Pedido } from '../models/index.js';
-import {
-  criarErroHttp,
-  criarId,
-  responderErro,
-  responderNaoEncontrado
-} from './controller.helpers.js';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Organiza e valida os dados completos do cliente.
@@ -15,7 +10,9 @@ function extrairDadosCliente(body) {
   const telefone = body.telefone?.trim() || null;
 
   if (!nome) {
-    throw criarErroHttp('O campo nome e obrigatorio.');
+    const erro = new Error('O campo nome e obrigatorio.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return { nome, telefone };
@@ -32,7 +29,9 @@ function extrairDadosClienteParcial(body) {
     const nome = body.nome?.trim();
 
     if (!nome) {
-      throw criarErroHttp('O campo nome nao pode ficar vazio.');
+      const erro = new Error('O campo nome nao pode ficar vazio.');
+      erro.statusCode = 400;
+      throw erro;
     }
 
     dadosCliente.nome = nome;
@@ -43,7 +42,9 @@ function extrairDadosClienteParcial(body) {
   }
 
   if (Object.keys(dadosCliente).length === 0) {
-    throw criarErroHttp('Envie pelo menos um campo para atualizar no PATCH.');
+    const erro = new Error('E necessario enviar pelo menos um campo para atualizar.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return dadosCliente;
@@ -59,7 +60,9 @@ export async function listarClientes(req, res) {
 
     return res.json(clientes)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -72,12 +75,14 @@ export async function buscarClientePorId(req, res) {
     const cliente = await Cliente.findByPk(req.params.id)
 
     if (!cliente) {
-      return responderNaoEncontrado(res, 'Cliente')
+      return res.status(404).json({ message: 'Cliente não encontrado.' });
     }
 
     return res.json(cliente)
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -89,7 +94,7 @@ export async function criarCliente(req, res) {
   try {
     const dadosCliente = extrairDadosCliente(req.body)
     const cliente = await Cliente.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosCliente
     })
 
@@ -98,7 +103,9 @@ export async function criarCliente(req, res) {
       data: cliente
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -112,7 +119,7 @@ export async function atualizarCliente(req, res) {
     const cliente = await Cliente.findByPk(req.params.id) // metodo get para buscar o cliente pelo ID
 
     if (!cliente) {
-      return responderNaoEncontrado(res, 'Cliente')
+      return res.status(404).json({ message: 'Cliente não encontrado.' });
     }
 
     const dadosCliente = extrairDadosCliente(req.body)
@@ -123,7 +130,9 @@ export async function atualizarCliente(req, res) {
       data: cliente
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -137,7 +146,7 @@ export async function atualizarClienteParcial(req, res) {
     const cliente = await Cliente.findByPk(req.params.id)
 
     if (!cliente) {
-      return responderNaoEncontrado(res, 'Cliente')
+      return res.status(404).json({ message: 'Cliente não encontrado.' });
     }
 
     const dadosCliente = extrairDadosClienteParcial(req.body)
@@ -148,7 +157,9 @@ export async function atualizarClienteParcial(req, res) {
       data: cliente
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }
 
@@ -161,16 +172,15 @@ export async function removerCliente(req, res) {
     const cliente = await Cliente.findByPk(req.params.id)
 
     if (!cliente) {
-      return responderNaoEncontrado(res, 'Cliente')
+      return res.status(404).json({ message: 'Cliente não encontrado.' });
     }
 
     const quantidadePedidos = await Pedido.count({ where: { idCliente: req.params.id } })
 
     if (quantidadePedidos > 0) {
-      throw criarErroHttp(
-        'Este cliente possui pedidos vinculados e nao pode ser removido.',
-        409
-      )
+      return res.status(409).json({
+        message: 'Este cliente possui pedidos vinculados e nao pode ser removido.' 
+      });
     }
 
     await cliente.destroy()
@@ -179,6 +189,8 @@ export async function removerCliente(req, res) {
       message: 'Cliente removido com sucesso.'
     })
   } catch (error) {
-    return responderErro(res, error);
+    console.error(error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ message: error.message || 'Erro interno no servidor' });
   }
 }

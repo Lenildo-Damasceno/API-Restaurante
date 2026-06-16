@@ -6,13 +6,6 @@ const perfils = ['administrador', 'cliente', 'funcionario', 'gerente']
 
 
 export const autenticar = async (req,res,next) => {
-    // if (!req.session.userId) 
-    //     return res.redirect('/login')
-
-    //     const user = await User.findByPk(req.session.userId.id)
-    //     if (!user) {
-    //         return res.redirect('/login')
-    //     }
     if(!req.cookies.auth_token) 
         return res.redirect('/login')
     
@@ -43,4 +36,21 @@ export const apagarCache = (req, res, next) => {
     res.set('Pragma', 'no-cache')
     res.set('Expires', '0')
     next()
+}
+
+export const exigirBancoConectado = (req, res, next) => {
+    // Ignora login e arquivos estáticos (que possuem extensão com ponto)
+    if (req.path.startsWith('/login') || req.path.includes('.')) {
+        return next()
+    }
+
+    if (req.app.locals.statusBanco?.conectado) {
+        next()
+    } else {
+        console.error('Banco de dados não está disponível')
+        res.status(503).json({
+            erro: 'Banco de dados indisponível',
+            mensagem: 'O serviço não está disponível no momento. Tente novamente mais tarde.'
+        })
+    }
 }

@@ -1,5 +1,5 @@
 import { Cliente, ItemPedido, Pedido, Prato } from '../models/index.js';
-import { criarErroHttp, criarId } from './controller.helpers.js';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Monta o menu principal usado nas paginas EJS.
@@ -65,7 +65,9 @@ function extrairDadosCliente(body) {
   const telefone = body.telefone?.trim() || null;
 
   if (!nome) {
-    throw criarErroHttp('Informe o nome do cliente.');
+    const erro = new Error('Informe o nome do cliente.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return { nome, telefone };
@@ -80,11 +82,15 @@ function extrairDadosPrato(body) {
   const preco = Number(body.preco);
 
   if (!nome) {
-    throw criarErroHttp('Informe o nome do prato.');
+    const erro = new Error('Informe o nome do prato.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (Number.isNaN(preco) || preco < 0) {
-    throw criarErroHttp('Informe um preco valido para o prato.');
+    const erro = new Error('Informe um preco valido para o prato.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return { nome, categoria, preco };
@@ -101,7 +107,9 @@ async function validarClienteDoPedido(idCliente) {
   const cliente = await Cliente.findByPk(idCliente)
 
   if (!cliente) {
-    throw criarErroHttp('O cliente selecionado nao existe.')
+    const erro = new Error('O cliente selecionado nao existe.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return idCliente
@@ -118,7 +126,9 @@ async function validarPrato(idPrato) {
   const prato = await Prato.findByPk(idPrato)
 
   if (!prato) {
-    throw criarErroHttp('O prato selecionado nao existe.')
+    const erro = new Error('O prato selecionado nao existe.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return idPrato
@@ -134,7 +144,9 @@ async function extrairDadosPedido(body) {
   const idPrato = body.idPrato?.trim() || null;
 
   if (!Number.isInteger(mesa) || mesa <= 0) {
-    throw criarErroHttp('Informe um numero de mesa valido.');
+    const erro = new Error('Informe um numero de mesa valido.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   await validarClienteDoPedido(idCliente);
@@ -152,15 +164,21 @@ async function extrairDadosItemPedido(body) {
   const idPrato = body.idPrato?.trim();
 
   if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    throw criarErroHttp('Informe uma quantidade valida para o item.');
+    const erro = new Error('Informe uma quantidade valida para o item.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (!idPedido) {
-    throw criarErroHttp('Selecione um pedido.');
+    const erro = new Error('Selecione um pedido.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (!idPrato) {
-    throw criarErroHttp('Selecione um prato.');
+    const erro = new Error('Selecione um prato.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   const [pedido, prato] = await Promise.all([
@@ -169,11 +187,15 @@ async function extrairDadosItemPedido(body) {
   ])
 
   if (!pedido) {
-    throw criarErroHttp('O pedido selecionado nao existe.');
+    const erro = new Error('O pedido selecionado nao existe.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   if (!prato) {
-    throw criarErroHttp('O prato selecionado nao existe.');
+    const erro = new Error('O prato selecionado nao existe.');
+    erro.statusCode = 400;
+    throw erro;
   }
 
   return { quantidade, idPedido, idPrato };
@@ -315,7 +337,7 @@ export async function cadastrarClientePelaPagina(req, res) {
     const dadosCliente = extrairDadosCliente(req.body)
 
     await Cliente.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosCliente
     })
 
@@ -333,7 +355,7 @@ export async function cadastrarPratoPelaPagina(req, res) {
     const dadosPrato = extrairDadosPrato(req.body)
 
     await Prato.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosPrato
     })
 
@@ -353,13 +375,13 @@ export async function cadastrarPedidoPelaPagina(req, res) {
     const { idPrato, ...dadosPedidoSemPrato } = dadosPedido
 
     const pedido = await Pedido.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosPedidoSemPrato
     })
 
     if (idPrato) {
       await ItemPedido.create({
-        id: criarId(),
+        id: randomUUID(),
         idPedido: pedido.id,
         idPrato: idPrato,
         quantidade: 1
@@ -380,7 +402,7 @@ export async function cadastrarItemPedidoPelaPagina(req, res) {
     const dadosItemPedido = await extrairDadosItemPedido(req.body)
 
     await ItemPedido.create({
-      id: criarId(),
+      id: randomUUID(),
       ...dadosItemPedido
     })
 
