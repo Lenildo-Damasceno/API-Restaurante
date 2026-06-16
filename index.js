@@ -8,6 +8,11 @@ import bcrypt from 'bcrypt'
 console.log('Iniciando sincronização das tabelas...')
 await sincronizarBD()
 
+// Configuração essencial para cookies seguros em produção (atrás de proxies como Heroku/Nginx)
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1)
+}
+
 try {
     const totalUsers = await User.count()
     if (totalUsers === 0) {
