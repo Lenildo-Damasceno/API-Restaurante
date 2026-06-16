@@ -5,7 +5,7 @@ import { validarPerfil } from '../middlewares/authUser.js';
 const routeUser = express.Router();
 
 routeUser.get('/', validarPerfil(['administrador']), listarUsuarios);
-routeUser.post('/', validarPerfil(['administrador']), criarUsuario);
+routeUser.post('/', validarPerfil, criarUsuario);
 routeUser.get('/cadastroUsuario', validarPerfil(['administrador']), cadastrarUsuario);
 routeUser.put('/:id', validarPerfil(['administrador']), atualizarUsuario);
 routeUser.delete('/:id', validarPerfil(['administrador']), removerUser);
