@@ -16,7 +16,7 @@ router.use('/clientes', autenticar, clientesRoutes);
 router.use('/pratos', autenticar, validarPerfil(['administrador', 'gerente']), pratosRoutes);
 router.use('/pedidos', autenticar, pedidosRoutes);
 router.use('/itens-pedido', autenticar, itensPedidoRoutes);
-router.use('/User', autenticar, validarPerfil(['administrador', 'gerente']), routeUser);
+router.use('/user', autenticar, validarPerfil(['administrador']), routeUser);
 router.use('/login', routeLogin);
 
 

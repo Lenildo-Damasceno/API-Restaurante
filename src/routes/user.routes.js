@@ -1,14 +1,13 @@
 import express from 'express';
 import { listarUsuarios, criarUsuario, cadastrarUsuario, atualizarUsuario, removerUser, editarParcial } from '../controllers/controlUser.js';
-import { validarPerfil } from '../middlewares/authUser.js';
 
 const routeUser = express.Router();
 
-routeUser.get('/', validarPerfil(['administrador']), listarUsuarios);
-routeUser.post('/', validarPerfil(['administrador']), criarUsuario);
-routeUser.get('/cadastroUsuario', validarPerfil(['administrador']), cadastrarUsuario);
-routeUser.put('/:id', validarPerfil(['administrador']), atualizarUsuario);
-routeUser.delete('/:id', validarPerfil(['administrador']), removerUser);
-routeUser.patch('/:id', validarPerfil(['administrador']), editarParcial);
+routeUser.get('/', listarUsuarios);
+routeUser.post('/', criarUsuario);
+routeUser.get('/cadastroUsuario', cadastrarUsuario);
+routeUser.put('/:id', atualizarUsuario);
+routeUser.delete('/:id', removerUser);
+routeUser.patch('/:id', editarParcial);
 
 export default routeUser;

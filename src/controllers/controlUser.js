@@ -25,11 +25,11 @@ export const criarUsuario = async (req, res) => {
         const perfil = req.body.perfil || 'cliente'
 
         if (!nome || !email || !senha) {
-            return res.redirect(`/User/cadastroUsuario?error=${encodeURIComponent('Nome, email e senha são obrigatórios.')}`)
+            return res.redirect(`/user/cadastroUsuario?error=${encodeURIComponent('Nome, email e senha são obrigatórios.')}`)
         }
 
         if (confirmarSenha && senha !== confirmarSenha) {
-            return res.redirect(`/User/cadastroUsuario?error=${encodeURIComponent('As senhas não conferem.')}`)
+            return res.redirect(`/user/cadastroUsuario?error=${encodeURIComponent('As senhas não conferem.')}`)
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10)
