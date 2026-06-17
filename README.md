@@ -1,6 +1,6 @@
 # API-Restaurante
 
-API-Restaurante usando Node.js, Express, sqlite3 e arquitetura MVC.
+API-Restaurante usando Node.js, Express, Sequelize e arquitetura MVC.
 
 ## Estrutura
 
@@ -37,9 +37,8 @@ src/
 
 ## Banco de dados
 
-O script SQL base esta em `src/database/schema.sql`.
 O arquivo SQLite padrao fica em `src/database/restaurante.sqlite`.
 
 ## Observacao
 
-O projeto usa `sqlite3` com arquivo local do banco e SQL direto na camada de models.
+O projeto usa Sequelize para sincronizar as tabelas a partir dos models.

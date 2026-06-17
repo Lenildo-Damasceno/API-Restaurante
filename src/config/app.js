@@ -3,9 +3,7 @@ import morgan from 'morgan'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import routes from '../routes/index.js'
-import sequelize from './orm.js'
-import User from '../models/modelUSER.js'
-import { apagarCache, autenticar, validarPerfil, exigirBancoConectado } from '../middlewares/authUser.js'
+import { apagarCache, exigirBancoConectado } from '../middlewares/authUser.js'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 
@@ -28,7 +26,6 @@ app.use(express.urlencoded({ extended: true }))
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '../views'))
-app.User = User
 app.locals.statusBanco = { conectado: false }
 app.use(exigirBancoConectado)
 
