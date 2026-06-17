@@ -8,27 +8,27 @@ import bcrypt from 'bcrypt'
 console.log('Iniciando sincronização das tabelas...')
 await sincronizarBD()
 
-// Configuração essencial para cookies seguros em produção (atrás de proxies como Heroku/Nginx)
+
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1)
 }
 
-try {
-    const totalUsers = await User.count()
-    if (totalUsers === 0) {
-        console.log('Nenhum usuário encontrado. Criando administrador padrão...')
-        const senhaCriptografada = await bcrypt.hash('admin123', 10)
-        await User.create({
-            nome: 'Admin Padrão',
-            email: 'admin@admin.com',
-            password: senhaCriptografada,
-            perfil: 'administrador'
-        })
-        console.log('Administrador padrão criado com sucesso! E-mail: admin@admin.com | Senha: admin123')
-    }
-} catch (error) {
-    console.error('Erro ao verificar ou criar o usuário padrão:', error)
-}
+// try {
+//     const totalUsers = await User.count()
+//     if (totalUsers === 0) {
+//         console.log('Nenhum usuário encontrado. Criando administrador padrão...')
+//         const senhaCriptografada = await bcrypt.hash('admin123', 10)
+//         await User.create({
+//             nome: 'Admin Padrão',
+//             email: 'admin@admin.com',
+//             password: senhaCriptografada,
+//             perfil: 'administrador'
+//         })
+//         console.log('Administrador padrão criado com sucesso! E-mail: admin@admin.com | Senha: admin123')
+//     }
+// } catch (error) {
+//     console.error('Erro ao verificar ou criar o usuário padrão:', error)
+// }
 
 
 try {

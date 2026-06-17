@@ -1,8 +1,8 @@
 <%- include('./_header.ejs', { pageTitle: 'Dashboard', activePage: 'dashboard' }) %>
 
-<% if (usuario && usuario.perfil === 'admin') { %>
+<% if (usuario && ['administrador', 'admin', 'administrator'].includes(String(usuario.perfil).toLowerCase().trim())) { %>
   <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-    <a href="/User/cadastroUsuario" class="button">
+    <a href="/user/cadastroUsuario" class="button">
       <span class="icon">👤+</span> Cadastrar Novo Usuário
     </a>
   </div>

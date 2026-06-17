@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import User from '../models/modelUSER.js'
+import { normalizarPerfil } from '../middlewares/authUser.js'
 
 
 
@@ -22,7 +23,7 @@ export const criarUsuario = async (req, res) => {
         const email = req.body.email
         const senha = req.body.senha || req.body.password 
         const confirmarSenha = req.body.confirmarSenha || req.body.confirmPassword
-        const perfil = req.body.perfil || 'cliente'
+        const perfil = normalizarPerfil(req.body.perfil || 'cliente')
 
         if (!nome || !email || !senha) {
             return res.redirect(`/user/cadastroUsuario?error=${encodeURIComponent('Nome, email e senha são obrigatórios.')}`)

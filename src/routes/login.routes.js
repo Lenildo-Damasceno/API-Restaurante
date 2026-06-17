@@ -5,7 +5,7 @@ const routeLogin = express.Router();
 
 routeLogin.get('/', login);
 routeLogin.post('/', validarLogin);
-routeLogin.get('/logout', logout); // Mudado para GET para facilitar o uso em links
+routeLogin.get('/logout', logout); 
 routeLogin.post('/logout', autenticar, logout); 
 routeLogin.get('/recuperar-senha', telaRecuperarSenha);
 routeLogin.post('/recuperar-senha', recuperarSenha);

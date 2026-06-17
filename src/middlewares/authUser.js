@@ -1,8 +1,17 @@
-import User from '../models/modelUSER.js'
 import jwt from 'jsonwebtoken'
 
 
-const perfils = ['administrador', 'cliente', 'funcionario', 'gerente']
+const aliasesPerfil = {
+    admin: 'administrador',
+    administrator: 'administrador'
+}
+
+export const normalizarPerfil = (perfil) => {
+    if (!perfil) return perfil
+
+    const perfilNormalizado = String(perfil).toLowerCase().trim()
+    return aliasesPerfil[perfilNormalizado] || perfilNormalizado
+}
 
 
 export const autenticar = async (req,res,next) => {
@@ -23,9 +32,10 @@ export const autenticar = async (req,res,next) => {
 
 export const validarPerfil = (perfisPermitidos) => {
     return (req, res, next) => {
-        const perfilUsuario = req.user?.perfil
+        const perfilUsuario = normalizarPerfil(req.user?.perfil)
+        const perfisNormalizados = perfisPermitidos.map(normalizarPerfil)
 
-        if (!perfilUsuario || !perfisPermitidos.includes(perfilUsuario)) {
+        if (!perfilUsuario || !perfisNormalizados.includes(perfilUsuario)) {
             return res.status(403).send('Acesso negado')
         }
 
